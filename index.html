@@ -1,0 +1,1846 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ôn tập PTTKTT</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar-title">📚 PTTKTT — Ôn tập</div>
+
+        <div class="nav-section">
+          <div class="nav-label">Câu 1</div>
+          <a class="nav-item active" onclick="show('complexity', this)"
+            >Độ phức tạp đệ quy</a
+          >
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">BFS / DFS</div>
+          <a class="nav-item" onclick="show('bfs-paths', this)"
+            >Mọi con đường về 0</a
+          >
+          <a class="nav-item" onclick="show('bfs-robot', this)">Rôbot</a>
+          <a class="nav-item" onclick="show('bfs-water', this)">Đong nước</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">Quay lui</div>
+          <a class="nav-item" onclick="show('bt-queens', this)">Quân hậu</a>
+          <a class="nav-item" onclick="show('bt-divide', this)">Chia của</a>
+          <a class="nav-item" onclick="show('bt-coins', this)">Đổi tiền (QL)</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">Tham lam</div>
+          <a class="nav-item" onclick="show('gr-schedule', this)">Lập lịch</a>
+          <a class="nav-item" onclick="show('gr-dance', this)">Khiêu vũ</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">Hàng đợi ưu tiên</div>
+          <a class="nav-item" onclick="show('pq-metal', this)"
+            >Nối thanh kim loại</a
+          >
+          <a class="nav-item" onclick="show('pq-detective', this)"
+            >Trinh thám</a
+          >
+          <a class="nav-item" onclick="show('pq-median', this)"
+            >Phần tử trung vị</a
+          >
+          <a class="nav-item" onclick="show('pq-delivery', this)">Giao hàng</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">Quy hoạch động</div>
+          <a class="nav-item" onclick="show('dp-coins', this)"
+            >Đổi tiền (QHĐ)</a
+          >
+          <a class="nav-item" onclick="show('dp-lcs', this)"
+            >Xâu con chung (LCS)</a
+          >
+          <a class="nav-item" onclick="show('dp-knapsack', this)"
+            >Sắp xếp ba lô</a
+          >
+          <a class="nav-item" onclick="show('dp-square', this)"
+            >Cắt hình vuông</a
+          >
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="hero">
+          <h1>Đề cương ôn tập — Phân tích Thiết kế Thuật toán</h1>
+          <p>90 phút · Thi viết · 4 câu · Tự chuẩn bị giấy thi</p>
+          <div class="hero-badges">
+            <span class="badge badge-blue">Độ phức tạp đệ quy</span>
+            <span class="badge badge-green">BFS / DFS</span>
+            <span class="badge badge-orange">Quay lui</span>
+            <span class="badge badge-teal">Tham lam</span>
+            <span class="badge badge-purple">Hàng đợi ưu tiên</span>
+            <span class="badge badge-red">Quy hoạch động</span>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- ===== COMPLEXITY ===== -->
+          <div id="complexity" class="section active">
+            <div class="section-title">
+              Câu 1 — Độ phức tạp thuật toán đệ quy
+            </div>
+            <div class="section-sub">
+              Cho code đệ quy → Bước 1: tìm biểu thức truy hồi T(n) · Bước 2:
+              dùng cây hoặc Master Theorem
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span class="card-icon icon-blue">1</span>Bước 1 — Tìm biểu thức
+                truy hồi T(n)
+              </div>
+              <p>
+                Nhìn vào hàm đệ quy và đặt T(n) = thời gian chạy với đầu vào
+                kích thước n.
+              </p>
+              <ul class="steps">
+                <li>
+                  Xác định <strong>base case</strong>: thường là T(0) = 1 hoặc
+                  T(1) = 1
+                </li>
+                <li>Đếm <strong>số lần gọi đệ quy</strong> (= a)</li>
+                <li>
+                  Xác định <strong>kích thước mỗi lần gọi</strong> (= n/b hoặc
+                  n-k)
+                </li>
+                <li>Đếm <strong>công việc ngoài đệ quy</strong> (= f(n))</li>
+                <li>Viết: <strong>T(n) = a·T(n/b) + f(n)</strong></li>
+              </ul>
+              <div class="example-box">
+                <div class="example-title">Ví dụ</div>
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">void</span> <span class="fn">foo</span>(<span class="kw">int</span> n) {
+    <span class="kw">if</span> (n &lt;= <span class="num">1</span>) <span class="kw">return</span>;         <span class="cm">// base case: T(1) = 1</span>
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) ...    <span class="cm">// vòng lặp: f(n) = O(n)</span>
+    <span class="fn">foo</span>(n/<span class="num">2</span>);                      <span class="cm">// 1 lần gọi, kích thước n/2</span>
+    <span class="fn">foo</span>(n/<span class="num">2</span>);                      <span class="cm">// 1 lần gọi, kích thước n/2</span>
+}</pre>
+                </div>
+                <p>→ <strong>T(n) = 2T(n/2) + n</strong>, T(1) = 1</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span class="card-icon icon-green">2</span>Bước 2A — Master
+                Theorem
+              </div>
+              <p>
+                Áp dụng khi T(n) = aT(n/b) + f(n), với a ≥ 1, b > 1, f(n) > 0.
+              </p>
+              <p>
+                Tính <strong>p = log<sub>b</sub>(a)</strong>, so sánh với f(n):
+              </p>
+              <div class="cases">
+                <div class="case-box">
+                  <div class="case-num">Trường hợp 1</div>
+                  <div class="case-cond">
+                    f(n) = O(n^(p-ε))<br />f(n) nhỏ hơn n^p
+                  </div>
+                  <div class="case-result">T(n) = Θ(n^p)</div>
+                </div>
+                <div class="case-box">
+                  <div class="case-num">Trường hợp 2</div>
+                  <div class="case-cond">f(n) = Θ(n^p)<br />f(n) bằng n^p</div>
+                  <div class="case-result">T(n) = Θ(n^p · log n)</div>
+                </div>
+                <div class="case-box">
+                  <div class="case-num">Trường hợp 3</div>
+                  <div class="case-cond">
+                    f(n) = Ω(n^(p+ε))<br />f(n) lớn hơn n^p
+                  </div>
+                  <div class="case-result">T(n) = Θ(f(n))</div>
+                </div>
+              </div>
+              <div class="example-box">
+                <div class="example-title">Ví dụ 1 — T(n) = 2T(n/2) + n</div>
+                <p>a=2, b=2, f(n)=n → p = log₂(2) = <strong>1</strong></p>
+                <p>
+                  n^p = n¹ = n, mà f(n) = n → <strong>Trường hợp 2</strong> →
+                  T(n) = <strong>Θ(n log n)</strong>
+                </p>
+              </div>
+              <div class="example-box">
+                <div class="example-title">Ví dụ 2 — T(n) = 4T(n/2) + n</div>
+                <p>a=4, b=2, f(n)=n → p = log₂(4) = <strong>2</strong></p>
+                <p>
+                  n^p = n², mà f(n) = n = O(n^(2-1)) →
+                  <strong>Trường hợp 1</strong> → T(n) = <strong>Θ(n²)</strong>
+                </p>
+              </div>
+              <div class="example-box">
+                <div class="example-title">Ví dụ 3 — T(n) = T(n/2) + n²</div>
+                <p>a=1, b=2, f(n)=n² → p = log₂(1) = <strong>0</strong></p>
+                <p>
+                  n^p = n⁰ = 1, mà f(n) = n² = Ω(n^(0+2)) →
+                  <strong>Trường hợp 3</strong> → T(n) = <strong>Θ(n²)</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span class="card-icon icon-orange">2</span>Bước 2B — Cây đệ quy
+                (Recursion Tree)
+              </div>
+              <ul class="steps">
+                <li>
+                  Vẽ cây: gốc là T(n), mỗi nút có a nhánh con kích thước n/b
+                </li>
+                <li>Tại mỗi tầng i: chi phí = a^i · f(n/b^i)</li>
+                <li>
+                  Số tầng = log<sub>b</sub>(n), số lá = a^(log<sub>b</sub>(n)) =
+                  n^(log<sub>b</sub>(a))
+                </li>
+                <li>Tổng = cộng chi phí tất cả tầng + chi phí lá</li>
+              </ul>
+              <div class="example-box">
+                <div class="example-title">
+                  Ví dụ — T(n) = 2T(n/2) + n (MergeSort)
+                </div>
+                <p>Tầng 0: 1 nút, chi phí = n</p>
+                <p>Tầng 1: 2 nút, chi phí = 2·(n/2) = n</p>
+                <p>Tầng 2: 4 nút, chi phí = 4·(n/4) = n</p>
+                <p>
+                  ... log₂n tầng, mỗi tầng chi phí n → Tổng =
+                  <strong>n·log₂n = Θ(n log n)</strong>
+                </p>
+              </div>
+              <div class="note-box">
+                <div class="note-title">⚠ Đặc biệt — T(n) = T(n-1) + c</div>
+                <p>
+                  Khi đệ quy giảm tuyến tính (n-1), không dùng Master Theorem.
+                  Dùng cây: n tầng, mỗi tầng c → T(n) = Θ(n)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BFS: Paths to 0 ===== -->
+          <div id="bfs-paths" class="section">
+            <div class="section-title">BFS/DFS — Mọi con đường về 0</div>
+            <div class="section-sub">
+              Liệt kê tất cả các đường đi từ n về 0, mỗi bước trừ đi 1 hoặc 2
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'paths-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'paths-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'paths-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="paths-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Từ n, mỗi bước có thể trừ 1 hoặc 2.
+                  Liệt kê tất cả các dãy số từ n về đến 0.
+                </p>
+                <p><strong>Ý tưởng (DFS/Quay lui):</strong></p>
+                <ul class="steps">
+                  <li>Bắt đầu từ n, lưu vào đường đi path</li>
+                  <li>Thử trừ 1: gọi đệ quy với n-1 (nếu n-1 ≥ 0)</li>
+                  <li>Thử trừ 2: gọi đệ quy với n-2 (nếu n-2 ≥ 0)</li>
+                  <li>Khi đến 0: in ra đường đi, quay lui</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Số đường đi</div>
+                  f(n) = f(n-1) + f(n-2) — giống dãy Fibonacci
+                </div>
+              </div>
+            </div>
+            <div id="paths-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ với n = 3</div>
+                  <p>Từ 3 về 0:</p>
+                  <p>3 → 2 → 1 → 0 (trừ 1, trừ 1, trừ 1)</p>
+                  <p>3 → 2 → 0 (trừ 1, trừ 2)</p>
+                  <p>3 → 1 → 0 (trừ 2, trừ 1)</p>
+                  <p>
+                    → <strong>3 đường đi</strong> = f(3) = f(2)+f(1) = 2+1 = 3 ✓
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="paths-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">using namespace</span> std;
+
+vector&lt;<span class="kw">int</span>&gt; path;
+
+<span class="kw">void</span> <span class="fn">findPaths</span>(<span class="kw">int</span> n) {
+    path.push_back(n);
+    <span class="kw">if</span> (n == <span class="num">0</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> x : path) cout &lt;&lt; x &lt;&lt; <span class="str">" "</span>;
+        cout &lt;&lt; <span class="str">"\n"</span>;
+    } <span class="kw">else</span> {
+        <span class="kw">if</span> (n - <span class="num">1</span> >= <span class="num">0</span>) <span class="fn">findPaths</span>(n - <span class="num">1</span>);
+        <span class="kw">if</span> (n - <span class="num">2</span> >= <span class="num">0</span>) <span class="fn">findPaths</span>(n - <span class="num">2</span>);
+    }
+    path.pop_back(); <span class="cm">// quay lui</span>
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; cin &gt;&gt; n;
+    <span class="fn">findPaths</span>(n);
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(2^n)</span> — mỗi
+                  bước có 2 lựa chọn
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BFS: Robot ===== -->
+          <div id="bfs-robot" class="section">
+            <div class="section-title">BFS — Rôbot</div>
+            <div class="section-sub">
+              Tìm đường đi ngắn nhất cho rôbot trong mê cung lưới 2D
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'robot-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'robot-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'robot-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="robot-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Rôbot ở ô (sx, sy) cần đến ô (ex,
+                  ey) trong lưới m×n. Ô '#' là tường, '.' là đi được. Tìm số
+                  bước ngắn nhất.
+                </p>
+                <p><strong>Ý tưởng (BFS):</strong></p>
+                <ul class="steps">
+                  <li>Dùng hàng đợi (queue), bắt đầu từ ô nguồn (sx, sy)</li>
+                  <li>
+                    Mỗi lần lấy ô hiện tại, thử 4 hướng: lên, xuống, trái, phải
+                  </li>
+                  <li>
+                    Nếu ô kề hợp lệ và chưa thăm → đưa vào queue, cập nhật dist
+                  </li>
+                  <li>Khi đến đích → in ra dist[ex][ey]</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Tại sao BFS?</div>
+                  BFS đảm bảo tìm đường đi ngắn nhất trong đồ thị không trọng số
+                </div>
+                <div class="note-box">
+                  <div class="note-title">⚠ Lưu ý</div>
+                  <p>
+                    Nếu đề hỏi liệt kê <em>tất cả</em> đường đi → dùng DFS. Nếu
+                    hỏi đường đi <em>ngắn nhất</em> → dùng BFS.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="robot-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">
+                    Ví dụ lưới 4×4 (S=start, E=end, #=tường)
+                  </div>
+                  <pre
+                    style="
+                      color: #6ee7b7;
+                      font-family: monospace;
+                      font-size: 14px;
+                      line-height: 1.6;
+                    "
+                  >
+  S . . #
+  # # . #
+  . . . .
+  . # . E
+
+Khoảng cách BFS từ S:
+  0  1  2  #
+  #  #  3  #
+  7  6  4  5
+  8  #  5  6
+            </pre
+                  >
+                  <p>
+                    Đường ngắn nhất:
+                    S(0,0)→(0,1)→(0,2)→(1,2)→(2,2)→(2,3)→(3,3)=E,
+                    <strong>6 bước</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="robot-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> dx[] = {<span class="num">0</span>,<span class="num">0</span>,<span class="num">1</span>,<span class="num">-1</span>};
+<span class="kw">int</span> dy[] = {<span class="num">1</span>,<span class="num">-1</span>,<span class="num">0</span>,<span class="num">0</span>};
+
+<span class="kw">int</span> <span class="fn">bfsRobot</span>(vector&lt;string&gt;&amp; grid, <span class="kw">int</span> sx, <span class="kw">int</span> sy, <span class="kw">int</span> ex, <span class="kw">int</span> ey) {
+    <span class="kw">int</span> m = grid.size(), n = grid[<span class="num">0</span>].size();
+    vector&lt;vector&lt;<span class="kw">int</span>&gt;&gt; dist(m, vector&lt;<span class="kw">int</span>&gt;(n, -<span class="num">1</span>));
+    queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; q;
+    q.push({sx, sy}); dist[sx][sy] = <span class="num">0</span>;
+    <span class="kw">while</span> (!q.empty()) {
+        <span class="kw">auto</span> [x, y] = q.front(); q.pop();
+        <span class="kw">if</span> (x==ex && y==ey) <span class="kw">return</span> dist[x][y];
+        <span class="kw">for</span> (<span class="kw">int</span> d=<span class="num">0</span>; d&lt;<span class="num">4</span>; d++) {
+            <span class="kw">int</span> nx=x+dx[d], ny=y+dy[d];
+            <span class="kw">if</span> (nx>=<span class="num">0</span> && nx&lt;m && ny>=<span class="num">0</span> && ny&lt;n
+                && grid[nx][ny] != <span class="str">'#'</span> && dist[nx][ny]==-<span class="num">1</span>) {
+                dist[nx][ny] = dist[x][y] + <span class="num">1</span>;
+                q.push({nx, ny});
+            }
+        }
+    }
+    <span class="kw">return</span> -<span class="num">1</span>; <span class="cm">// không có đường</span>
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(m×n)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BFS: Water Jug ===== -->
+          <div id="bfs-water" class="section">
+            <div class="section-title">BFS — Đong nước</div>
+            <div class="section-sub">
+              Bài toán 2 bình: tìm số bước tối thiểu để đong được đúng c lít
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'water-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'water-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'water-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="water-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có 2 bình dung tích A và B lít. Tìm
+                  số thao tác tối thiểu để được đúng c lít (trong 1 trong 2
+                  bình). Nguồn nước vô hạn.
+                </p>
+                <p><strong>Các thao tác có thể:</strong></p>
+                <ul>
+                  <li>Đổ đầy bình A (hoặc B)</li>
+                  <li>Đổ rỗng bình A (hoặc B)</li>
+                  <li>Đổ từ A sang B (hoặc B sang A)</li>
+                </ul>
+                <p>
+                  <strong>Ý tưởng (BFS trên không gian trạng thái):</strong>
+                </p>
+                <ul class="steps">
+                  <li>
+                    Trạng thái = (lượng nước trong A, lượng nước trong B) = (x,
+                    y)
+                  </li>
+                  <li>Trạng thái ban đầu: (0, 0)</li>
+                  <li>
+                    BFS từ (0,0), mỗi trạng thái sinh ra ≤ 6 trạng thái kề
+                  </li>
+                  <li>Khi x=c hoặc y=c → đã đạt mục tiêu</li>
+                </ul>
+              </div>
+            </div>
+            <div id="water-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ A=4, B=3, c=2</div>
+                  <p>Bước 0: (0,0)</p>
+                  <p>Bước 1: Đổ đầy A → (4,0)</p>
+                  <p>Bước 2: Đổ A sang B → (1,3)</p>
+                  <p>Bước 3: Đổ rỗng B → (1,0)</p>
+                  <p>Bước 4: Đổ A sang B → (0,1)</p>
+                  <p>Bước 5: Đổ đầy A → (4,1)</p>
+                  <p>Bước 6: Đổ A sang B → (2,3)</p>
+                  <p>
+                    → Bình A có <strong>2 lít</strong>, đạt mục tiêu sau
+                    <strong>6 bước</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="water-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;map&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">bfsWater</span>(<span class="kw">int</span> A, <span class="kw">int</span> B, <span class="kw">int</span> c) {
+    map&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;, <span class="kw">int</span>&gt; dist;
+    queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; q;
+    q.push({<span class="num">0</span>,<span class="num">0</span>}); dist[{<span class="num">0</span>,<span class="num">0</span>}] = <span class="num">0</span>;
+    <span class="kw">while</span> (!q.empty()) {
+        <span class="kw">auto</span> [x, y] = q.front(); q.pop();
+        <span class="kw">int</span> d = dist[{x,y}];
+        <span class="kw">if</span> (x==c || y==c) <span class="kw">return</span> d;
+        vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; next = {
+            {A, y}, {x, B}, {<span class="num">0</span>, y}, {x, <span class="num">0</span>},
+            {x-min(x,B-y), y+min(x,B-y)},
+            {x+min(y,A-x), y-min(y,A-x)}
+        };
+        <span class="kw">for</span> (<span class="kw">auto</span> s : next)
+            <span class="kw">if</span> (!dist.count(s)) { dist[s] = d+<span class="num">1</span>; q.push(s); }
+    }
+    <span class="kw">return</span> -<span class="num">1</span>;
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BACKTRACKING: N-Queens ===== -->
+          <div id="bt-queens" class="section">
+            <div class="section-title">Quay lui — Quân hậu (N-Queens)</div>
+            <div class="section-sub">
+              Đặt N quân hậu trên bàn cờ N×N sao cho không quân nào ăn quân nào
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'q-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'q-viz')">
+                🌳 Cây quay lui
+              </div>
+              <div class="tab" onclick="switchTab(this, 'q-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="q-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Ý tưởng:</strong> Đặt lần lượt từng hàng, thử từng cột
+                  trong hàng đó. Nếu ô (row, col) an toàn thì đặt hậu, gọi đệ
+                  quy cho hàng tiếp theo. Nếu không an toàn thì thử cột khác
+                  (quay lui).
+                </p>
+                <ul class="steps">
+                  <li>
+                    Hàm <code>isSafe(row, col)</code>: kiểm tra cột, đường chéo
+                    trái, đường chéo phải
+                  </li>
+                  <li>
+                    Hàm <code>solve(row)</code>: thử đặt hậu vào từng cột của
+                    hàng row
+                  </li>
+                  <li>Nếu row = N → tìm được 1 lời giải, in ra</li>
+                  <li>
+                    Ngược lại: thử col từ 0 đến N-1, nếu safe → đặt → gọi
+                    solve(row+1) → bỏ
+                  </li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Kiểm tra an toàn</div>
+                  Không có 2 hậu cùng cột: col[i] ≠ col[row]<br />Không có 2 hậu
+                  cùng đường chéo: |row-i| ≠ |col[row]-col[i]|
+                </div>
+              </div>
+            </div>
+
+            <!-- BACKTRACKING TREE VISUALIZATION -->
+            <div id="q-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">🌳 Cây quay lui — N-Queens (N=4)</div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="bt-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="bt-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="bt-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="bt-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+
+                  <div class="bt-tree-wrap">
+                    <svg
+                      id="bt-svg"
+                      class="bt-tree-svg"
+                      width="640"
+                      height="340"
+                      viewBox="0 0 640 340"
+                    >
+                      <!-- edges drawn by JS -->
+                      <g id="bt-edges"></g>
+                      <!-- nodes drawn by JS -->
+                      <g id="bt-nodes"></g>
+                    </svg>
+                  </div>
+
+                  <div class="bt-log" id="bt-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem cây quay lui được xây
+                    dựng từng bước.
+                  </div>
+                </div>
+
+                <div class="note-box" style="margin-top: 0.5rem">
+                  <div class="note-title">📖 Chú giải màu</div>
+                  <p>
+                    <span style="color: #4a9eff">■ Xanh dương</span> = đang xét
+                    &nbsp;|&nbsp;
+                    <span style="color: #22c55e">■ Xanh lá</span> = đặt thành
+                    công &nbsp;|&nbsp;
+                    <span style="color: #ef4444">■ Đỏ</span> = bị cắt nhánh
+                    (không an toàn)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div id="q-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> n, col[<span class="num">100</span>];
+
+<span class="kw">bool</span> <span class="fn">isSafe</span>(<span class="kw">int</span> row, <span class="kw">int</span> c) {
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; row; i++)
+        <span class="kw">if</span> (col[i] == c || abs(row-i) == abs(col[i]-c))
+            <span class="kw">return false</span>;
+    <span class="kw">return true</span>;
+}
+
+<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> row) {
+    <span class="kw">if</span> (row == n) {
+        <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) cout &lt;&lt; col[i]+<span class="num">1</span> &lt;&lt; <span class="str">" "</span>;
+        cout &lt;&lt; <span class="str">"\n"</span>;
+        <span class="kw">return</span>;
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> c = <span class="num">0</span>; c &lt; n; c++) {
+        <span class="kw">if</span> (<span class="fn">isSafe</span>(row, c)) {
+            col[row] = c;
+            <span class="fn">solve</span>(row + <span class="num">1</span>);
+        }
+    }
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    cin &gt;&gt; n;
+    <span class="fn">solve</span>(<span class="num">0</span>);
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(N!)</span> worst
+                  case
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BACKTRACKING: Divide ===== -->
+          <div id="bt-divide" class="section">
+            <div class="section-title">Quay lui — Chia của</div>
+            <div class="section-sub">
+              Chia n món đồ thành 2 nhóm có tổng giá trị bằng nhau
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'div-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'div-viz')">
+                🌳 Cây quay lui
+              </div>
+              <div class="tab" onclick="switchTab(this, 'div-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="div-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Cho n món đồ có giá trị v[1..n].
+                  Chia thành 2 nhóm sao cho tổng 2 nhóm bằng nhau.
+                </p>
+                <p>
+                  <strong>Điều kiện cần:</strong> Tổng S phải là số chẵn. Bài
+                  toán quy về: tìm tập con có tổng = S/2.
+                </p>
+                <ul class="steps">
+                  <li>Tính tổng S, kiểm tra S % 2 == 0, đặt target = S/2</li>
+                  <li>
+                    Hàm solve(i, sum): xét món thứ i với tổng nhóm 1 hiện tại là
+                    sum
+                  </li>
+                  <li>
+                    Thử <strong>cho vào nhóm 1</strong>: solve(i+1, sum + v[i])
+                  </li>
+                  <li>Thử <strong>cho vào nhóm 2</strong>: solve(i+1, sum)</li>
+                  <li>Khi i = n và sum = target → tìm được cách chia</li>
+                </ul>
+              </div>
+            </div>
+
+            <div id="div-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    🌳 Cây quay lui — Chia của: v=[3,1,4], target=4
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="div-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="div-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="div-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="div-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div class="bt-tree-wrap">
+                    <svg
+                      id="div-svg"
+                      class="bt-tree-svg"
+                      width="580"
+                      height="280"
+                      viewBox="0 0 580 280"
+                    >
+                      <g id="div-edges"></g>
+                      <g id="div-nodes"></g>
+                    </svg>
+                  </div>
+                  <div class="bt-log" id="div-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem cây quay lui được xây
+                    dựng từng bước.<br /><span style="color: #fcd34d"
+                      >v=[3,1,4], S=8, target=4. Mỗi nút hiện thị (i,
+                      sum).</span
+                    >
+                  </div>
+                </div>
+                <div class="note-box" style="margin-top: 0.5rem">
+                  <div class="note-title">📖 Chú giải màu</div>
+                  <p>
+                    <span style="color: #4a9eff">■ Xanh dương</span> = đang xét
+                    &nbsp;|&nbsp;
+                    <span style="color: #22c55e">■ Xanh lá</span> = tìm được
+                    cách chia &nbsp;|&nbsp;
+                    <span style="color: #ef4444">■ Đỏ</span> = cắt nhánh (sum >
+                    target)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div id="div-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> n, v[<span class="num">100</span>], group[<span class="num">100</span>], target;
+<span class="kw">bool</span> found = <span class="kw">false</span>;
+
+<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> i, <span class="kw">int</span> sum) {
+    <span class="kw">if</span> (found) <span class="kw">return</span>;
+    <span class="kw">if</span> (i == n) {
+        <span class="kw">if</span> (sum == target) { found = <span class="kw">true</span>; <span class="cm">/* in kết quả */</span> }
+        <span class="kw">return</span>;
+    }
+    <span class="kw">if</span> (sum &gt; target) <span class="kw">return</span>; <span class="cm">// cắt nhánh</span>
+    group[i] = <span class="num">1</span>; <span class="fn">solve</span>(i+<span class="num">1</span>, sum + v[i]);
+    group[i] = <span class="num">2</span>; <span class="fn">solve</span>(i+<span class="num">1</span>, sum);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    cin &gt;&gt; n;
+    <span class="kw">int</span> S = <span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) { cin&gt;&gt;v[i]; S+=v[i]; }
+    <span class="kw">if</span> (S % <span class="num">2</span> != <span class="num">0</span>) { cout &lt;&lt; <span class="str">"Khong the chia!\n"</span>; <span class="kw">return</span> <span class="num">0</span>; }
+    target = S / <span class="num">2</span>;
+    <span class="fn">solve</span>(<span class="num">0</span>, <span class="num">0</span>);
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BACKTRACKING: Coins ===== -->
+          <div id="bt-coins" class="section">
+            <div class="section-title">Quay lui — Đổi tiền</div>
+            <div class="section-sub">
+              Liệt kê tất cả các cách đổi tiền dùng quay lui
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'btc-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'btc-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'btc-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="btc-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có các mệnh giá d[1..k] (vô hạn mỗi
+                  loại). Liệt kê TẤT CẢ các cách đổi số tiền n.
+                </p>
+                <ul class="steps">
+                  <li>
+                    Hàm solve(idx, remain, path): đang xét mệnh giá thứ idx, còn
+                    lại remain, đường đi path
+                  </li>
+                  <li>
+                    Để tránh trùng: mỗi bước chỉ dùng mệnh giá từ idx trở đi
+                    (dùng ≥ idx)
+                  </li>
+                  <li>
+                    Thử dùng d[idx] k lần (k = 0,1,2,...) miễn remain - k*d[idx]
+                    ≥ 0
+                  </li>
+                  <li>Gọi đệ quy với idx+1, remain đã giảm</li>
+                  <li>Khi remain = 0 → in đường đi</li>
+                </ul>
+              </div>
+            </div>
+            <div id="btc-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ: d = [1, 2, 5], n = 5</div>
+                  <p>Các cách đổi 5:</p>
+                  <p>1+1+1+1+1 = 5</p>
+                  <p>1+1+1+2 = 5</p>
+                  <p>1+2+2 = 5</p>
+                  <p>5 = 5</p>
+                  <p>
+                    → Tổng <strong>4 cách</strong>: {1×5}, {1×3, 2×1}, {1×1,
+                    2×2}, {5×1}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="btc-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> d[] = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">5</span>}, k = <span class="num">3</span>, n;
+<span class="kw">int</span> cnt[<span class="num">10</span>];
+
+<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> idx, <span class="kw">int</span> remain) {
+    <span class="kw">if</span> (remain == <span class="num">0</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;k; i++)
+            <span class="kw">if</span> (cnt[i]&gt;<span class="num">0</span>) cout &lt;&lt; d[i] &lt;&lt; <span class="str">"x"</span> &lt;&lt; cnt[i] &lt;&lt; <span class="str">" "</span>;
+        cout &lt;&lt; <span class="str">"\n"</span>; <span class="kw">return</span>;
+    }
+    <span class="kw">if</span> (idx == k) <span class="kw">return</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> c = remain/d[idx]; c &gt;= <span class="num">0</span>; c--) {
+        cnt[idx] = c;
+        <span class="fn">solve</span>(idx+<span class="num">1</span>, remain - c*d[idx]);
+    }
+    cnt[idx] = <span class="num">0</span>;
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    cin &gt;&gt; n; <span class="fn">solve</span>(<span class="num">0</span>, n);
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== GREEDY: Scheduling ===== -->
+          <div id="gr-schedule" class="section">
+            <div class="section-title">
+              Tham lam — Lập lịch (Activity Selection)
+            </div>
+            <div class="section-sub">
+              Chọn nhiều công việc nhất trong khoảng thời gian không chồng chéo
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'sch-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'sch-viz')">
+                ▶ Minh họa từng bước
+              </div>
+              <div class="tab" onclick="switchTab(this, 'sch-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="sch-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có n công việc, công việc i có thời
+                  gian bắt đầu s[i] và kết thúc f[i]. Chọn nhiều công việc nhất
+                  sao cho không có 2 công việc nào chồng thời gian.
+                </p>
+                <p>
+                  <strong>Chiến lược tham lam:</strong> Luôn chọn công việc kết
+                  thúc sớm nhất chưa chồng với công việc đã chọn.
+                </p>
+                <ul class="steps">
+                  <li>
+                    Sắp xếp các công việc theo thời gian
+                    <strong>kết thúc</strong> tăng dần
+                  </li>
+                  <li>Chọn công việc đầu tiên (kết thúc sớm nhất)</li>
+                  <li>
+                    Duyệt qua các công việc còn lại: nếu s[i] ≥ thời điểm kết
+                    thúc của công việc cuối đã chọn → chọn
+                  </li>
+                  <li>Cập nhật thời điểm kết thúc cuối</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Điều kiện chọn</div>
+                  s[i] ≥ lastFinish → chọn công việc i, cập nhật lastFinish =
+                  f[i]
+                </div>
+              </div>
+            </div>
+
+            <!-- GREEDY STEP VISUALIZATION -->
+            <div id="sch-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    ▶ Thuật toán lập lịch tham lam — từng bước
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="sch-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="sch-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="sch-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="sch-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+
+                  <div class="sched-arena" id="sch-arena">
+                    <div class="sched-axis"></div>
+                    <div class="sched-ticks" id="sch-ticks"></div>
+                  </div>
+
+                  <div class="sched-log" id="sch-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem thuật toán tham lam
+                    từng bước.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="sch-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">struct</span> <span class="tp">Job</span> { <span class="kw">int</span> s, f, id; };
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; cin &gt;&gt; n;
+    vector&lt;<span class="tp">Job</span>&gt; jobs(n);
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; j : jobs) cin &gt;&gt; j.s &gt;&gt; j.f;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) jobs[i].id = i+<span class="num">1</span>;
+    
+    sort(jobs.begin(), jobs.end(), [](<span class="tp">Job</span> a, <span class="tp">Job</span> b){
+        <span class="kw">return</span> a.f &lt; b.f;
+    });
+    
+    <span class="kw">int</span> lastFinish = -<span class="num">1</span>, count = <span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; j : jobs) {
+        <span class="kw">if</span>(j.s >= lastFinish) {
+            cout &lt;&lt; <span class="str">"Chon job "</span> &lt;&lt; j.id &lt;&lt; <span class="str">"\n"</span>;
+            lastFinish = j.f; count++;
+        }
+    }
+    cout &lt;&lt; <span class="str">"Tong so: "</span> &lt;&lt; count &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span> do
+                  sắp xếp
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== GREEDY: Dance ===== -->
+          <div id="gr-dance" class="section">
+            <div class="section-title">Tham lam — Khiêu vũ</div>
+            <div class="section-sub">
+              Ghép cặp nam-nữ để tổng chênh lệch chiều cao nhỏ nhất
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'dance-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'dance-viz')">
+                ▶ Minh họa từng bước
+              </div>
+              <div class="tab" onclick="switchTab(this, 'dance-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="dance-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có n nam (chiều cao m[]) và n nữ
+                  (chiều cao f[]). Ghép mỗi nam với một nữ. Tối thiểu hóa tổng
+                  |m[i] - f[σ(i)]|.
+                </p>
+                <p>
+                  <strong>Chiến lược tham lam:</strong> Sắp xếp cả 2 mảng, ghép
+                  người có rank tương đương với nhau.
+                </p>
+                <ul class="steps">
+                  <li>Sắp xếp m[] tăng dần</li>
+                  <li>Sắp xếp f[] tăng dần</li>
+                  <li>Ghép m[i] với f[i] (cùng thứ hạng)</li>
+                  <li>Tổng chênh lệch = Σ|m[i] - f[i]|</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Chứng minh tham lam tối ưu</div>
+                  Nếu hoán đổi 2 cặp bất kỳ, tổng không giảm (bất đẳng thức tam
+                  giác)
+                </div>
+              </div>
+            </div>
+
+            <div id="dance-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">▶ Ghép cặp khiêu vũ — từng bước</div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="dance-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="dance-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="dance-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="dance-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div
+                    id="dance-arena"
+                    style="
+                      background: #070b14;
+                      border: 1px solid #1e2740;
+                      border-radius: 8px;
+                      padding: 1.2rem;
+                      margin-bottom: 0.8rem;
+                      min-height: 120px;
+                    "
+                  ></div>
+                  <div class="sched-log" id="dance-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem ghép cặp từng bước.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="dance-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; cin &gt;&gt; n;
+    vector&lt;<span class="kw">int</span>&gt; m(n), f(n);
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:m) cin&gt;&gt;x;
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:f) cin&gt;&gt;x;
+    sort(m.begin(), m.end());
+    sort(f.begin(), f.end());
+    <span class="kw">long long</span> total = <span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) {
+        cout &lt;&lt; m[i] &lt;&lt; <span class="str">" - "</span> &lt;&lt; f[i] &lt;&lt; <span class="str">"\n"</span>;
+        total += abs(m[i] - f[i]);
+    }
+    cout &lt;&lt; <span class="str">"Tong chenh lech: "</span> &lt;&lt; total &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PQ: Metal rods ===== -->
+          <div id="pq-metal" class="section">
+            <div class="section-title">
+              Hàng đợi ưu tiên — Nối thanh kim loại
+            </div>
+            <div class="section-sub">
+              Nối các thanh với chi phí nhỏ nhất (Huffman-like)
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'metal-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'metal-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'metal-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="metal-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có n thanh kim loại độ dài a[1..n].
+                  Mỗi lần nối 2 thanh có chi phí = tổng độ dài 2 thanh đó. Tối
+                  thiểu hóa tổng chi phí nối.
+                </p>
+                <p>
+                  <strong>Chiến lược (Tham lam + Min-Heap):</strong> Luôn nối 2
+                  thanh ngắn nhất trước.
+                </p>
+                <ul class="steps">
+                  <li>Đưa tất cả độ dài vào min-heap (hàng đợi ưu tiên min)</li>
+                  <li>Lặp n-1 lần: lấy 2 phần tử nhỏ nhất a và b</li>
+                  <li>Chi phí += a + b</li>
+                  <li>Đưa (a+b) trở lại heap</li>
+                  <li>Khi heap còn 1 phần tử → xong</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Tại sao luôn nối ngắn nhất?</div>
+                  Thanh nào nối sớm hơn sẽ được cộng nhiều lần hơn → nối ngắn
+                  trước giảm chi phí
+                </div>
+              </div>
+            </div>
+            <div id="metal-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ: [4, 3, 2, 6]</div>
+                  <p>Heap: {2, 3, 4, 6}</p>
+                  <p>Bước 1: lấy 2+3=5, chi phí=5. Heap: {4, 5, 6}</p>
+                  <p>Bước 2: lấy 4+5=9, chi phí=5+9=14. Heap: {6, 9}</p>
+                  <p>
+                    Bước 3: lấy 6+9=15, chi phí=14+15=<strong>29</strong>. Heap:
+                    {15}
+                  </p>
+                  <p>→ Tổng chi phí tối thiểu = <strong>29</strong></p>
+                </div>
+              </div>
+            </div>
+            <div id="metal-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; cin &gt;&gt; n;
+    priority_queue&lt;<span class="kw">long long</span>, vector&lt;<span class="kw">long long</span>&gt;, greater&lt;<span class="kw">long long</span>&gt;&gt; pq;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) { <span class="kw">long long</span> x; cin&gt;&gt;x; pq.push(x); }
+    <span class="kw">long long</span> cost = <span class="num">0</span>;
+    <span class="kw">while</span>(pq.size() &gt; <span class="num">1</span>) {
+        <span class="kw">long long</span> a = pq.top(); pq.pop();
+        <span class="kw">long long</span> b = pq.top(); pq.pop();
+        cost += a + b; pq.push(a + b);
+    }
+    cout &lt;&lt; cost &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PQ: Detective ===== -->
+          <div id="pq-detective" class="section">
+            <div class="section-title">
+              Hàng đợi ưu tiên — Trinh thám (Dijkstra)
+            </div>
+            <div class="section-sub">
+              Tìm đường đi ngắn nhất trong đồ thị có trọng số
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'det-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'det-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'det-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="det-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Đồ thị có trọng số không âm. Tìm
+                  đường đi ngắn nhất từ nguồn s đến tất cả đỉnh còn lại.
+                </p>
+                <p><strong>Thuật toán Dijkstra:</strong></p>
+                <ul class="steps">
+                  <li>Khởi tạo dist[s]=0, dist[v]=∞ với v≠s</li>
+                  <li>Đưa (0, s) vào min-priority queue</li>
+                  <li>Lấy đỉnh u có dist nhỏ nhất ra khỏi queue</li>
+                  <li>
+                    Với mỗi cạnh (u,v,w): nếu dist[u]+w &lt; dist[v] → cập nhật
+                    dist[v], đưa vào queue
+                  </li>
+                  <li>Lặp đến khi queue rỗng</li>
+                </ul>
+                <div class="note-box">
+                  <div class="note-title">⚠ Điều kiện</div>
+                  <p>
+                    Dijkstra chỉ đúng khi trọng số cạnh ≥ 0. Nếu có cạnh âm →
+                    dùng Bellman-Ford.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="det-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">
+                    Ví dụ đồ thị 4 đỉnh, nguồn = 1
+                  </div>
+                  <p>
+                    Cạnh: 1-2 (w=2), 1-3 (w=6), 2-3 (w=3), 2-4 (w=8), 3-4 (w=1)
+                  </p>
+                  <p>Ban đầu: dist=[0, ∞, ∞, ∞]</p>
+                  <p>Lấy 1 (d=0): dist[2]=2, dist[3]=6</p>
+                  <p>Lấy 2 (d=2): dist[3]=5, dist[4]=10</p>
+                  <p>Lấy 3 (d=5): dist[4]=6</p>
+                  <p>→ dist = [0, 2, 5, <strong>6</strong>]</p>
+                </div>
+              </div>
+            </div>
+            <div id="det-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
+<span class="kw">const int</span> INF = <span class="num">1e9</span>;
+
+vector&lt;<span class="kw">int</span>&gt; <span class="fn">dijkstra</span>(<span class="kw">int</span> n, vector&lt;vector&lt;pii&gt;&gt;&amp; adj, <span class="kw">int</span> s) {
+    vector&lt;<span class="kw">int</span>&gt; dist(n+<span class="num">1</span>, INF);
+    priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq;
+    dist[s] = <span class="num">0</span>; pq.push({<span class="num">0</span>, s});
+    <span class="kw">while</span>(!pq.empty()) {
+        <span class="kw">auto</span> [d, u] = pq.top(); pq.pop();
+        <span class="kw">if</span>(d &gt; dist[u]) <span class="kw">continue</span>;
+        <span class="kw">for</span>(<span class="kw">auto</span> [v, w] : adj[u])
+            <span class="kw">if</span>(dist[u]+w &lt; dist[v]) {
+                dist[v] = dist[u]+w; pq.push({dist[v], v});
+            }
+    }
+    <span class="kw">return</span> dist;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp:
+                  <span class="complexity-tag">O((V+E) log V)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PQ: Median ===== -->
+          <div id="pq-median" class="section">
+            <div class="section-title">Hàng đợi ưu tiên — Phần tử trung vị</div>
+            <div class="section-sub">
+              Tìm trung vị của dòng số liệu sử dụng 2 heap
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'med-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'med-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'med-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="med-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Nhận liên tục các số, sau mỗi số in
+                  ra trung vị của tất cả số đã nhận.
+                </p>
+                <p><strong>Ý tưởng — 2 Heap:</strong></p>
+                <ul>
+                  <li>
+                    <strong>maxHeap (L)</strong>: chứa nửa nhỏ hơn, đỉnh = max
+                    của nửa nhỏ
+                  </li>
+                  <li>
+                    <strong>minHeap (R)</strong>: chứa nửa lớn hơn, đỉnh = min
+                    của nửa lớn
+                  </li>
+                </ul>
+                <ul class="steps">
+                  <li>Đưa x vào L (maxHeap)</li>
+                  <li>
+                    Nếu L.top() > R.top() → cân bằng: chuyển L.top() sang R
+                  </li>
+                  <li>
+                    Cân bằng kích thước: nếu |L|-|R| > 1 → chuyển L.top() sang
+                    R; hoặc ngược lại
+                  </li>
+                  <li>
+                    Trung vị = L.top() nếu L nhiều hơn, hoặc (L.top()+R.top())/2
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div id="med-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">
+                    Ví dụ: nhập lần lượt 5, 1, 3, 7, 2
+                  </div>
+                  <p>x=5: L={5}, R={}. Median=5</p>
+                  <p>x=1: L={1}, R={5}. Median=(1+5)/2=3</p>
+                  <p>x=3: L={3,1}, R={5}. Median=3</p>
+                  <p>x=7: L={3,1}, R={5,7}. Median=(3+5)/2=4</p>
+                  <p>x=2: L={3,2,1}, R={5,7}. Median=3</p>
+                </div>
+              </div>
+            </div>
+            <div id="med-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">using namespace</span> std;
+
+priority_queue&lt;<span class="kw">int</span>&gt; L;
+priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</span>&gt;, greater&lt;<span class="kw">int</span>&gt;&gt; R;
+
+<span class="kw">void</span> <span class="fn">addNum</span>(<span class="kw">int</span> x) {
+    L.push(x);
+    <span class="kw">if</span> (!R.empty() && L.top() > R.top()) { R.push(L.top()); L.pop(); }
+    <span class="kw">if</span> (L.size() > R.size() + <span class="num">1</span>) { R.push(L.top()); L.pop(); }
+    <span class="kw">else if</span> (R.size() > L.size()) { L.push(R.top()); R.pop(); }
+}
+
+<span class="kw">double</span> <span class="fn">getMedian</span>() {
+    <span class="kw">if</span> (L.size() > R.size()) <span class="kw">return</span> L.top();
+    <span class="kw">return</span> (L.top() + R.top()) / <span class="num">2.0</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(log n)</span> mỗi
+                  phần tử
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PQ: Delivery ===== -->
+          <div id="pq-delivery" class="section">
+            <div class="section-title">Hàng đợi ưu tiên — Giao hàng</div>
+            <div class="section-sub">
+              Tối ưu hóa lịch giao hàng sử dụng hàng đợi ưu tiên
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'del-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'del-ex')">
+                Minh họa
+              </div>
+              <div class="tab" onclick="switchTab(this, 'del-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="del-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có n đơn hàng, đơn i có thời điểm
+                  đến a[i] và thời gian xử lý p[i]. Tối thiểu hóa tổng thời gian
+                  chờ (Shortest Job First).
+                </p>
+                <ul class="steps">
+                  <li>Sắp xếp đơn hàng theo thời điểm đến a[i]</li>
+                  <li>
+                    Dùng min-heap chứa (p[i], a[i]) — ưu tiên đơn hàng xử lý
+                    ngắn
+                  </li>
+                  <li>Tại thời điểm t: đưa tất cả đơn đến trước t vào heap</li>
+                  <li>Lấy đơn có p[i] nhỏ nhất ra xử lý, cập nhật t</li>
+                </ul>
+                <div class="formula">
+                  <div class="formula-label">Chiến lược SJF</div>
+                  Trong số các đơn đã đến, xử lý đơn ngắn nhất trước → tối thiểu
+                  tổng thời gian chờ
+                </div>
+              </div>
+            </div>
+            <div id="del-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ: 3 đơn hàng</div>
+                  <table class="dp-table" style="margin: 0.5rem 0">
+                    <tr>
+                      <th>Đơn</th>
+                      <th>Đến (a)</th>
+                      <th>Xử lý (p)</th>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>0</td>
+                      <td>6</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>1</td>
+                      <td>2</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>2</td>
+                      <td>4</td>
+                    </tr>
+                  </table>
+                  <p>t=0→6 (đơn 1), t=6→8 (đơn 2), t=8→12 (đơn 3)</p>
+                  <p>Tổng chờ: (6-0)+(8-1)+(12-2) = <strong>23</strong></p>
+                </div>
+              </div>
+            </div>
+            <div id="del-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; cin &gt;&gt; n;
+    vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; orders(n);
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; o:orders) cin&gt;&gt;o.first&gt;&gt;o.second;
+    sort(orders.begin(),orders.end());
+    priority_queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;,vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt;,greater&lt;&gt;&gt; pq;
+    <span class="kw">long long</span> t=<span class="num">0</span>, total=<span class="num">0</span>; <span class="kw">int</span> idx=<span class="num">0</span>;
+    <span class="kw">while</span>(idx&lt;n || !pq.empty()) {
+        <span class="kw">while</span>(idx&lt;n && orders[idx].first&lt;=t)
+            pq.push({orders[idx].second, orders[idx].first}), idx++;
+        <span class="kw">if</span>(pq.empty()) { t=orders[idx].first; <span class="kw">continue</span>; }
+        <span class="kw">auto</span> [p,a]=pq.top(); pq.pop();
+        t += p; total += t - a;
+    }
+    cout &lt;&lt; total &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== DP: Coins ===== -->
+          <div id="dp-coins" class="section">
+            <div class="section-title">Quy hoạch động — Đổi tiền</div>
+            <div class="section-sub">
+              Tìm số đồng xu ít nhất để đổi thành n đồng
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'dpc-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'dpc-viz')">
+                📊 Bảng QHĐ động
+              </div>
+              <div class="tab" onclick="switchTab(this, 'dpc-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="dpc-idea" class="tab-content active">
+              <div class="card">
+                <p>
+                  <strong>Bài toán:</strong> Có các mệnh giá d[1..k] (vô hạn mỗi
+                  loại). Tìm số đồng xu ÍT NHẤT để tổng = n.
+                </p>
+                <div class="formula">
+                  dp[i] = min số xu để đổi i đồng<br />dp[0] = 0<br />dp[i] =
+                  min(dp[i - d[j]] + 1) với mọi d[j] ≤ i
+                </div>
+              </div>
+            </div>
+
+            <!-- DP TABLE VISUALIZATION -->
+            <div id="dpc-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    📊 Điền bảng QHĐ — đổi tiền: d=[1,3,4], n=6
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="dpc-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="dpc-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="dpc-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="dpc-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div class="dp-anim-wrap">
+                    <table class="dp-anim-table" id="dpc-table">
+                      <thead>
+                        <tr id="dpc-head"></tr>
+                      </thead>
+                      <tbody>
+                        <tr id="dpc-body"></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="dp-log" id="dpc-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem bảng QHĐ được điền từng
+                    ô.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="dpc-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">const int</span> INF = <span class="num">1e9</span>;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> k, n; cin &gt;&gt; k &gt;&gt; n;
+    vector&lt;<span class="kw">int</span>&gt; d(k);
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:d) cin&gt;&gt;x;
+    vector&lt;<span class="kw">int</span>&gt; dp(n+<span class="num">1</span>, INF);
+    dp[<span class="num">0</span>] = <span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=n; i++)
+        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">0</span>; j&lt;k; j++)
+            <span class="kw">if</span>(i &gt;= d[j] && dp[i-d[j]] != INF)
+                dp[i] = min(dp[i], dp[i-d[j]] + <span class="num">1</span>);
+    cout &lt;&lt; dp[n] &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(n×k)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== DP: LCS ===== -->
+          <div id="dp-lcs" class="section">
+            <div class="section-title">
+              Quy hoạch động — Xâu con chung dài nhất (LCS)
+            </div>
+            <div class="section-sub">
+              Tìm xâu con chung dài nhất của 2 xâu X và Y
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'lcs-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'lcs-viz')">
+                📊 Bảng QHĐ động
+              </div>
+              <div class="tab" onclick="switchTab(this, 'lcs-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="lcs-idea" class="tab-content active">
+              <div class="card">
+                <div class="formula">
+                  dp[i][j] = độ dài LCS của X[1..i] và Y[1..j]<br /><br />Nếu
+                  X[i] == Y[j]: dp[i][j] = dp[i-1][j-1] + 1<br />Ngược lại:
+                  dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+                </div>
+              </div>
+            </div>
+
+            <div id="lcs-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    📊 Điền bảng LCS — X="ABCB", Y="BDCAB"
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="lcs-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="lcs-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="lcs-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="lcs-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div class="dp-anim-wrap">
+                    <table class="dp-anim-table" id="lcs-table"></table>
+                  </div>
+                  <div class="dp-log" id="lcs-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem bảng LCS được điền từng
+                    ô.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="lcs-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    string X, Y; cin &gt;&gt; X &gt;&gt; Y;
+    <span class="kw">int</span> m=X.size(), n=Y.size();
+    vector&lt;vector&lt;<span class="kw">int</span>&gt;&gt; dp(m+<span class="num">1</span>, vector&lt;<span class="kw">int</span>&gt;(n+<span class="num">1</span>, <span class="num">0</span>));
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=m; i++)
+        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">1</span>; j&lt;=n; j++) {
+            <span class="kw">if</span>(X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]) dp[i][j] = dp[i-<span class="num">1</span>][j-<span class="num">1</span>] + <span class="num">1</span>;
+            <span class="kw">else</span> dp[i][j] = max(dp[i-<span class="num">1</span>][j], dp[i][j-<span class="num">1</span>]);
+        }
+    cout &lt;&lt; dp[m][n] &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(m×n)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== DP: Knapsack ===== -->
+          <div id="dp-knapsack" class="section">
+            <div class="section-title">
+              Quy hoạch động — Sắp xếp ba lô (0/1 Knapsack)
+            </div>
+            <div class="section-sub">
+              Chọn đồ vật có giá trị cao nhất mà không vượt quá trọng lượng
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'kp-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'kp-viz')">
+                📊 Bảng QHĐ động
+              </div>
+              <div class="tab" onclick="switchTab(this, 'kp-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="kp-idea" class="tab-content active">
+              <div class="card">
+                <div class="formula">
+                  dp[i][j] = giá trị lớn nhất chọn từ i vật đầu, trọng lượng ≤
+                  j<br /><br />Không lấy vật i: dp[i][j] = dp[i-1][j]<br />Lấy
+                  vật i (j ≥ w[i]): dp[i][j] = dp[i-1][j-w[i]] + v[i]<br />dp[i][j]
+                  = max(hai trường hợp)
+                </div>
+              </div>
+            </div>
+
+            <div id="kp-viz" class="tab-content">
+              <div class="card">
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    📊 Điền bảng Ba lô — n=3, W=5, (w,v):(2,3),(3,4),(4,5)
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="kp-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="kp-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="kp-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="kp-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div class="dp-anim-wrap">
+                    <table class="dp-anim-table" id="kp-table"></table>
+                  </div>
+                  <div class="dp-log" id="kp-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem bảng ba lô được điền
+                    từng ô.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="kp-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n, W; cin &gt;&gt; n &gt;&gt; W;
+    vector&lt;<span class="kw">int</span>&gt; w(n+<span class="num">1</span>), v(n+<span class="num">1</span>);
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>;i&lt;=n;i++) cin&gt;&gt;w[i]&gt;&gt;v[i];
+    vector&lt;vector&lt;<span class="kw">int</span>&gt;&gt; dp(n+<span class="num">1</span>, vector&lt;<span class="kw">int</span>&gt;(W+<span class="num">1</span>, <span class="num">0</span>));
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=n; i++)
+        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">0</span>; j&lt;=W; j++) {
+            dp[i][j] = dp[i-<span class="num">1</span>][j];
+            <span class="kw">if</span>(j &gt;= w[i]) dp[i][j] = max(dp[i][j], dp[i-<span class="num">1</span>][j-w[i]] + v[i]);
+        }
+    cout &lt;&lt; dp[n][W] &lt;&lt; <span class="str">"\n"</span>;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp: <span class="complexity-tag">O(n×W)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== DP: Square ===== -->
+          <div id="dp-square" class="section">
+            <div class="section-title">
+              Quy hoạch động — Cắt hình vuông ít nhất
+            </div>
+            <div class="section-sub">
+              Cắt hình chữ nhật m×n thành ít hình vuông nhất
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchTab(this, 'sq-idea')">
+                Ý tưởng
+              </div>
+              <div class="tab" onclick="switchTab(this, 'sq-ex')">Minh họa</div>
+              <div class="tab" onclick="switchTab(this, 'sq-code')">
+                Code C++
+              </div>
+            </div>
+            <div id="sq-idea" class="tab-content active">
+              <div class="card">
+                <div class="formula">
+                  dp[m][n] = số hình vuông ít nhất để cắt hình chữ nhật m×n<br /><br />Base
+                  case: dp[k][k] = 1<br /><br />Cắt ngang tại hàng i: dp[m][n] =
+                  min(dp[i][n] + dp[m-i][n])<br />Cắt dọc tại cột j: dp[m][n] =
+                  min(dp[m][j] + dp[m][n-j])
+                </div>
+              </div>
+            </div>
+            <div id="sq-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">Ví dụ: m=2, n=3</div>
+                  <p>dp[2][3]: thử cắt ngang i=1: dp[1][3]+dp[1][3]=6</p>
+                  <p>thử cắt dọc j=1: dp[2][1]+dp[2][2]=2+1=3</p>
+                  <p>thử cắt dọc j=2: dp[2][2]+dp[2][1]=1+2=3</p>
+                  <p>→ dp[2][3] = <strong>3</strong></p>
+                </div>
+              </div>
+            </div>
+            <div id="sq-code" class="tab-content">
+              <div class="card">
+                <div class="code-block">
+                  <div class="code-header">C++</div>
+                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">int</span> dp[<span class="num">50</span>][<span class="num">50</span>];
+
+<span class="kw">int</span> <span class="fn">minSquares</span>(<span class="kw">int</span> m, <span class="kw">int</span> n) {
+    <span class="kw">if</span> (m == n) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="kw">if</span> (dp[m][n]) <span class="kw">return</span> dp[m][n];
+    <span class="kw">int</span> res = m * n;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;m; i++)
+        res = min(res, <span class="fn">minSquares</span>(i,n) + <span class="fn">minSquares</span>(m-i,n));
+    <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">1</span>; j&lt;n; j++)
+        res = min(res, <span class="fn">minSquares</span>(m,j) + <span class="fn">minSquares</span>(m,n-j));
+    <span class="kw">return</span> dp[m][n] = res;
+}</pre>
+                </div>
+                <p style="margin-top: 0.5rem">
+                  Độ phức tạp:
+                  <span class="complexity-tag">O(m²×n + m×n²)</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end content -->
+      </div>
+      <!-- end main -->
+    </div>
+    <!-- end layout -->
+
+    <button
+      class="scroll-top"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      ↑
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
