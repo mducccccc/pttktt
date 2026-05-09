@@ -298,277 +298,105 @@
         const N = 4;
 
         // Build a simplified tree (2 levels deep to show pruning)
-        // Layout: root at top, row 0 tries col 0,1,2,3
-        const nodes = [
-          {
-            id: 0,
-            label: "start",
-            x: 320,
-            y: 30,
-            parent: -1,
-            state: "inactive",
-          },
-          // row 0 children (try col 0,1,2,3)
-          {
-            id: 1,
-            label: "r0,c0",
-            x: 100,
-            y: 100,
-            parent: 0,
-            state: "inactive",
-          },
-          {
-            id: 2,
-            label: "r0,c1",
-            x: 230,
-            y: 100,
-            parent: 0,
-            state: "inactive",
-          },
-          {
-            id: 3,
-            label: "r0,c2",
-            x: 390,
-            y: 100,
-            parent: 0,
-            state: "inactive",
-          },
-          {
-            id: 4,
-            label: "r0,c3",
-            x: 540,
-            y: 100,
-            parent: 0,
-            state: "inactive",
-          },
-          // row 1 from c0: only c2 safe
-          {
-            id: 5,
-            label: "r1,c1",
-            x: 60,
-            y: 185,
-            parent: 1,
-            state: "inactive",
-          },
-          {
-            id: 6,
-            label: "r1,c2",
-            x: 105,
-            y: 185,
-            parent: 1,
-            state: "inactive",
-          },
-          {
-            id: 7,
-            label: "r1,c3",
-            x: 150,
-            y: 185,
-            parent: 1,
-            state: "inactive",
-          },
-          // row 1 from c1: c3 safe
-          {
-            id: 8,
-            label: "r1,c0",
-            x: 195,
-            y: 185,
-            parent: 2,
-            state: "inactive",
-          },
-          {
-            id: 9,
-            label: "r1,c2",
-            x: 235,
-            y: 185,
-            parent: 2,
-            state: "inactive",
-          },
-          {
-            id: 10,
-            label: "r1,c3",
-            x: 275,
-            y: 185,
-            parent: 2,
-            state: "inactive",
-          },
-          // row 1 from c2: c0 safe
-          {
-            id: 11,
-            label: "r1,c0",
-            x: 335,
-            y: 185,
-            parent: 3,
-            state: "inactive",
-          },
-          {
-            id: 12,
-            label: "r1,c1",
-            x: 380,
-            y: 185,
-            parent: 3,
-            state: "inactive",
-          },
-          {
-            id: 13,
-            label: "r1,c3",
-            x: 440,
-            y: 185,
-            parent: 3,
-            state: "inactive",
-          },
-          // row 1 from c3
-          {
-            id: 14,
-            label: "r1,c0",
-            x: 490,
-            y: 185,
-            parent: 4,
-            state: "inactive",
-          },
-          {
-            id: 15,
-            label: "r1,c1",
-            x: 540,
-            y: 185,
-            parent: 4,
-            state: "inactive",
-          },
-          {
-            id: 16,
-            label: "r1,c2",
-            x: 590,
-            y: 185,
-            parent: 4,
-            state: "inactive",
-          },
-          // row 2 from (c1→c3): success node
-          {
-            id: 17,
-            label: "r2,c0",
-            x: 258,
-            y: 265,
-            parent: 10,
-            state: "inactive",
-          },
-          {
-            id: 18,
-            label: "✓解",
-            x: 300,
-            y: 265,
-            parent: 10,
-            state: "inactive",
-          },
-          // row 2 from (c2→c0): success
-          {
-            id: 19,
-            label: "r2,c2",
-            x: 358,
-            y: 265,
-            parent: 11,
-            state: "inactive",
-          },
-          {
-            id: 20,
-            label: "✓解",
-            x: 415,
-            y: 265,
-            parent: 13,
-            state: "inactive",
-          },
-        ];
+        const n = 4;
+        let nodes = [];
+        let steps = [];
+        let xOffset = 20;
 
-        const steps = [
-          {
-            activate: [0],
-            msg: '<span class="info">Bắt đầu: đặt hậu vào hàng 0</span>',
-          },
-          {
-            activate: [1],
-            msg: '<span class="info">Thử col=0 (hàng 0)</span>',
-          },
-          {
-            activate: [5],
-            prune: [5],
-            msg: '<span class="no">✗ Thử col=1 (hàng 1) — xung đột đường chéo, cắt nhánh</span>',
-          },
-          {
-            activate: [6],
-            prune: [6],
-            msg: '<span class="no">✗ Thử col=2 (hàng 1) — xung đột cột, cắt nhánh</span>',
-          },
-          {
-            activate: [7],
-            prune: [7],
-            msg: '<span class="no">✗ Thử col=3 (hàng 1) — xung đột đường chéo, cắt nhánh</span>',
-          },
-          {
-            prune: [1],
-            msg: '<span class="no">↩ Quay lui từ col=0 (hàng 0) — không có lời giải</span>',
-          },
-          {
-            activate: [2],
-            msg: '<span class="info">Thử col=1 (hàng 0)</span>',
-          },
-          {
-            activate: [8],
-            prune: [8],
-            msg: '<span class="no">✗ Thử col=0 (hàng 1) — xung đột đường chéo</span>',
-          },
-          {
-            activate: [9],
-            prune: [9],
-            msg: '<span class="no">✗ Thử col=2 (hàng 1) — xung đột đường chéo</span>',
-          },
-          {
-            activate: [10],
-            msg: '<span class="info">Thử col=3 (hàng 1) — OK, tiếp tục hàng 2</span>',
-          },
-          {
-            activate: [17],
-            prune: [17],
-            msg: '<span class="no">✗ Thử col=0 (hàng 2) — xung đột, cắt nhánh</span>',
-          },
-          {
-            activate: [18],
-            success: [18],
-            msg: '<span class="ok">✅ col=2 (hàng 2) → lời giải! [1,3,0,2]</span>',
-          },
-          {
-            activate: [3],
-            msg: '<span class="info">Tiếp tục quay lui... thử col=2 (hàng 0)</span>',
-          },
-          {
-            activate: [11],
-            msg: '<span class="info">col=0 (hàng 1) OK</span>',
-          },
-          {
-            activate: [19],
-            prune: [19],
-            msg: '<span class="no">✗ Thử col=2 (hàng 2) — xung đột</span>',
-          },
-          {
-            activate: [12],
-            prune: [12],
-            msg: '<span class="no">✗ col=1 (hàng 1) xung đột</span>',
-          },
-          {
-            activate: [13],
-            msg: '<span class="info">col=3 (hàng 1) OK</span>',
-          },
-          {
-            activate: [20],
-            success: [20],
-            msg: '<span class="ok">✅ Lời giải 2: [2,0,3,1]</span>',
-          },
-          {
-            activate: [4],
-            activate2: [14, 15, 16],
-            msg: '<span class="info">col=3 (hàng 0) → tiếp tục nhưng không có thêm lời giải mới...</span>',
-          },
-          {
-            msg: '<span class="ok">✅ Hoàn thành! N=4 có 2 lời giải: [1,3,0,2] và [2,0,3,1]</span>',
-          },
-        ];
+        function buildTree() {
+            nodes = [];
+            steps = [];
+            let currentId = 0;
+            nodes.push({ id: 0, label: "root", depth: 0, parent: -1, state: 'inactive', children: [] });
+            
+            function dfs(k, parentId, board) {
+                if (k === n) {
+                    let sol = board.map((t, i) => `(${i+1},${t+1})`).join(' ');
+                    steps.push({
+                        activate: [],
+                        success: [parentId],
+                        msg: `<span class="ok">✅ Đạt k=4 → Lời giải: ${sol}</span>`
+                    });
+                    return;
+                }
+                
+                let curNodes = [];
+                for (let t = 0; t < n; t++) {
+                    currentId++;
+                    let myId = currentId;
+                    let isSafe = true;
+                    for (let i = 0; i < k; i++) {
+                        if (board[i] === t || Math.abs(k - i) === Math.abs(t - board[i])) {
+                            isSafe = false; break;
+                        }
+                    }
+                    nodes.push({
+                        id: myId,
+                        label: `k${k},t${t}`,
+                        depth: k + 1,
+                        parent: parentId,
+                        state: 'inactive',
+                        children: [],
+                        isSafe: isSafe
+                    });
+                    nodes[parentId].children.push(myId);
+                    curNodes.push(myId);
+                }
+                
+                steps.push({
+                    activate: curNodes,
+                    msg: `<span class="info">TRY(${k}): Duyệt 4 cột t=0,1,2,3</span>`
+                });
+                
+                for (let t = 0; t < n; t++) {
+                    let myId = curNodes[t];
+                    if (!nodes[myId].isSafe) {
+                        steps.push({
+                            prune: [myId],
+                            msg: `<span class="no">✗ TRY(${k}): Thử t=${t} — xung đột, quay lui</span>`
+                        });
+                    } else {
+                        steps.push({
+                            activate: [myId],
+                            msg: `<span class="info">TRY(${k}): Thử t=${t} — an toàn, gọi TRY(${k+1})</span>`
+                        });
+                        board.push(t);
+                        dfs(k + 1, myId, board);
+                        board.pop();
+                    }
+                }
+                if (k > 0) {
+                    steps.push({
+                        msg: `<span class="info">↩ Duyệt xong TRY(${k}), quay lui về TRY(${k-1})</span>`
+                    });
+                }
+            }
+            
+            dfs(0, 0, []);
+            steps.push({
+                msg: `<span class="ok">✅ Hoàn thành! In ra:<br>1 (1,2) (2,4) (3,1) (4,3)<br>2 (1,3) (2,1) (3,4) (4,2)</span>`
+            });
+
+            xOffset = 20;
+            function layout(nodeId) {
+                let node = nodes[nodeId];
+                node.y = node.depth * 65 + 25;
+                if (node.children.length === 0) {
+                    node.x = xOffset;
+                    xOffset += 24;
+                } else {
+                    let sumX = 0;
+                    node.children.forEach(childId => {
+                        layout(childId);
+                        sumX += nodes[childId].x;
+                    });
+                    node.x = sumX / node.children.length;
+                }
+            }
+            layout(0);
+        }
+
+        buildTree();
 
         let stepIdx = -1;
         let nodeStates = {};
@@ -581,6 +409,9 @@
 
         function renderTree() {
           const svg = document.getElementById("bt-svg");
+          svg.setAttribute("width", Math.max(640, xOffset + 20));
+          svg.setAttribute("viewBox", `0 0 ${Math.max(640, xOffset + 20)} 340`);
+          
           const edgesG = document.getElementById("bt-edges");
           const nodesG = document.getElementById("bt-nodes");
           edgesG.innerHTML = "";
@@ -601,9 +432,9 @@
               "line",
             );
             line.setAttribute("x1", p.x);
-            line.setAttribute("y1", p.y + 14);
+            line.setAttribute("y1", p.y + 11);
             line.setAttribute("x2", n.x);
-            line.setAttribute("y2", n.y - 14);
+            line.setAttribute("y2", n.y - 11);
             line.setAttribute("class", cls);
             edgesG.appendChild(line);
           });
@@ -622,7 +453,7 @@
             );
             circle.setAttribute("cx", n.x);
             circle.setAttribute("cy", n.y);
-            circle.setAttribute("r", 18);
+            circle.setAttribute("r", 12);
             g.appendChild(circle);
 
             const text = document.createElementNS(
@@ -633,11 +464,11 @@
             text.setAttribute("y", n.y + 1);
             text.setAttribute("text-anchor", "middle");
             text.setAttribute("dominant-baseline", "middle");
-            text.setAttribute("font-size", "9");
+            text.setAttribute("font-size", "7.5");
             text.textContent =
-              n.label === "start"
+              n.label === "root"
                 ? "root"
-                : n.label.replace("r", "").replace(",", "|");
+                : n.label.replace("k", "").replace("t", "").replace(",", "|");
             g.appendChild(text);
 
             nodesG.appendChild(g);

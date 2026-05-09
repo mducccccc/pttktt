@@ -731,7 +731,7 @@
           <div id="bfs-water" class="section">
             <div class="section-title">BFS — Đong nước</div>
             <div class="section-sub">
-              Bài toán 2 bình: tìm số bước tối thiểu để đong được đúng c lít
+              Cho 2 can n lít, m lít. Tìm số bước đong ít nhất để được k lít
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'water-idea')">
@@ -747,46 +747,160 @@
             <div id="water-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có 2 bình dung tích A và B lít. Tìm
-                  số thao tác tối thiểu để được đúng c lít (trong 1 trong 2
-                  bình). Nguồn nước vô hạn.
+                  <strong>Bài toán:</strong> Có 2 can dung tích <code>n</code> và <code>m</code> lít. Tìm
+                  số thao tác đong nước ít nhất để được đúng <code>k</code> lít (trong 1 trong 2
+                  can). Nguồn nước vô hạn.
                 </p>
-                <p><strong>Các thao tác có thể:</strong></p>
-                <ul>
-                  <li>Đổ đầy bình A (hoặc B)</li>
-                  <li>Đổ rỗng bình A (hoặc B)</li>
-                  <li>Đổ từ A sang B (hoặc B sang A)</li>
-                </ul>
-                <p>
-                  <strong>Ý tưởng (BFS trên không gian trạng thái):</strong>
-                </p>
+                <p style="margin-top: 1rem"><strong>Ý tưởng:</strong></p>
                 <ul class="steps">
+                  <li><strong>B1:</strong> Khai báo Queue, Map</li>
+                  <li><strong>B2:</strong> nhập n,m,k</li>
+                  <li><strong>B3:</strong> Đưa (0,0) vào Q</li>
+                  <li><strong>B4:</strong> M[(0,0)]=1</li>
                   <li>
-                    Trạng thái = (lượng nước trong A, lượng nước trong B) = (x,
-                    y)
+                    <strong>B5:</strong> lấy (x,y) ra khỏi Q đặt z=x+y<br>
+                    <code>Next[] = {(0,y); (n,y); (x,0); (x,m); (max(0,z-m), min(z,m)); (min(z,n), max(0,z-n))}</code><br>
+                    Duyệt v trên next<br>
+                    Nếu v khác M thì đưa v vào Q, M[v] = M[(x,y)] + 1<br>
+                    Nếu v first == k hoặc v second == k thì return M[v] - 1
                   </li>
-                  <li>Trạng thái ban đầu: (0, 0)</li>
-                  <li>
-                    BFS từ (0,0), mỗi trạng thái sinh ra ≤ 6 trạng thái kề
-                  </li>
-                  <li>Khi x=c hoặc y=c → đã đạt mục tiêu</li>
+                  <li><strong>B6:</strong> lặp lại B5 đến khi Q rỗng</li>
+                  <li><strong>B7:</strong> return -1</li>
                 </ul>
               </div>
             </div>
             <div id="water-ex" class="tab-content">
               <div class="card">
                 <div class="example-box">
-                  <div class="example-title">Ví dụ A=4, B=3, c=2</div>
-                  <p>Bước 0: (0,0)</p>
-                  <p>Bước 1: Đổ đầy A → (4,0)</p>
-                  <p>Bước 2: Đổ A sang B → (1,3)</p>
-                  <p>Bước 3: Đổ rỗng B → (1,0)</p>
-                  <p>Bước 4: Đổ A sang B → (0,1)</p>
-                  <p>Bước 5: Đổ đầy A → (4,1)</p>
-                  <p>Bước 6: Đổ A sang B → (2,3)</p>
-                  <p>
-                    → Bình A có <strong>2 lít</strong>, đạt mục tiêu sau
-                    <strong>6 bước</strong>
+                  <div class="example-title">
+                    Ví dụ n = 3, m = 5, k = 4 — theo dõi Queue và Map từng bước
+                  </div>
+                  <div style="overflow-x: auto; margin-top: 0.6rem">
+                    <table
+                      class="dp-table"
+                      style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 0.82rem;
+                      "
+                    >
+                      <thead>
+                        <tr>
+                          <th style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; background: #131929;">Bước</th>
+                          <th style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; background: #131929;">Xét (x, y)</th>
+                          <th style="padding: 6px 10px; text-align: left; border: 1px solid #2a3555; background: #131929;">Next (v mới sinh)</th>
+                          <th style="padding: 6px 10px; text-align: left; border: 1px solid #2a3555; background: #131929;">Queue Q</th>
+                          <th style="padding: 6px 10px; text-align: left; border: 1px solid #2a3555; background: #131929;">Map M</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">0</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">—</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555;">—</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[(0,0)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{(0,0):1}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">1</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(0, 0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(3,0) (0,5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(3,0)</span>, (0,5)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (3,0):2, (0,5):2}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">2</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(3, 0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(3,5) (0,3)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(0,5)</span>, (3,5), (0,3)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (3,5):3, (0,3):3}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">3</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(0, 5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(3,2)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(3,5)</span>, (0,3), (3,2)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (3,2):3}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">4</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(3, 5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;"><span style="color: #6b7280">—</span></td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(0,3)</span>, (3,2)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{...}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">5</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(0, 3)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(3,3)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(3,2)</span>, (3,3)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (3,3):4}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">6</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(3, 2)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(0,2)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(3,3)</span>, (0,2)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (0,2):4}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">7</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(3, 3)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(1,5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(0,2)</span>, (1,5)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (1,5):5}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">8</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(0, 2)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(2,0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(1,5)</span>, (2,0)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (2,0):5}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">9</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(1, 5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(1,0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(2,0)</span>, (1,0)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (1,0):6}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">10</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(2, 0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(2,5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(1,0)</span>, (2,5)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (2,5):6}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">11</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(1, 0)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">(0,1)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[<span style="color: #facc15">(2,5)</span>, (0,1)]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (0,1):7}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555;">12</td>
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #60a5fa; font-weight: 700;">(2, 5)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace; color: #4ade80;">(3,4)</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">[DỪNG]</td>
+                          <td style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace;">{..., (3,4):7}</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 6px 10px; text-align: center; border: 1px solid #2a3555; color: #22c55e; font-weight: 700;" colspan="2">Kết quả</td>
+                          <td colspan="3" style="padding: 6px 10px; border: 1px solid #2a3555; font-family: monospace; color: #4ade80;">Trạng thái (3, 4) có k = 4 → return M[(3,4)] - 1 = 7 - 1 = 6 bước</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p
+                    style="
+                      margin-top: 0.6rem;
+                      font-size: 0.83rem;
+                      color: #9ca3af;
+                    "
+                  >
+                    * Giá trị <span style="color: #6b7280">—</span> = tất cả trạng thái sinh ra đều đã tồn tại trong Map, không đẩy thêm vào Queue.<br />
+                    * Giá trị <span style="color: #facc15">vàng</span> = phần tử ở đầu Queue (sẽ lấy ra xét ở bước tiếp theo).
                   </p>
                 </div>
               </div>
@@ -795,31 +909,32 @@
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;map&gt;</span>
+                  <pre><span class="cm">//Tichpx - Dong nuoc</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
-<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
 
-<span class="kw">int</span> <span class="fn">bfsWater</span>(<span class="kw">int</span> A, <span class="kw">int</span> B, <span class="kw">int</span> c) {
-    map&lt;pii, <span class="kw">int</span>&gt; dist;
-    queue&lt;pii&gt; q;
-    q.push(make_pair(<span class="num">0</span>,<span class="num">0</span>)); dist[make_pair(<span class="num">0</span>,<span class="num">0</span>)] = <span class="num">0</span>;
-    <span class="kw">while</span> (!q.empty()) {
-        <span class="kw">int</span> x = q.front().first, y = q.front().second; q.pop();
-        <span class="kw">int</span> d = dist[make_pair(x,y)];
-        <span class="kw">if</span> (x==c || y==c) <span class="kw">return</span> d;
-        vector&lt;pii&gt; nexts = {
-            make_pair(A, y), make_pair(x, B),
-            make_pair(<span class="num">0</span>, y), make_pair(x, <span class="num">0</span>),
-            make_pair(x-min(x,B-y), y+min(x,B-y)),
-            make_pair(x+min(y,A-x), y-min(y,A-x))
-        };
-        <span class="kw">for</span> (<span class="kw">auto</span> s : nexts)
-            <span class="kw">if</span> (!dist.count(s)) { dist[s] = d+<span class="num">1</span>; q.push(s); }
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    <span class="kw">int</span> n,m,k;
+    cin&gt;&gt;n&gt;&gt;m&gt;&gt;k;
+    queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt;Q;
+    map&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;,<span class="kw">int</span>&gt; M;
+    Q.push({<span class="num">0</span>,<span class="num">0</span>});
+    M[{<span class="num">0</span>,<span class="num">0</span>}]=<span class="num">0</span>;
+    <span class="kw">while</span>(Q.size())
+    {
+        <span class="kw">int</span> x=Q.front().first, y=Q.front().second, z=x+y;
+        Q.pop();
+        pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Next[]={{<span class="num">0</span>,y},{n,y},{x,<span class="num">0</span>},{x,m},{max(<span class="num">0</span>,z-m),min(z,m)},{min(z,n),max(<span class="num">0</span>,z-n)}};
+        <span class="kw">for</span>(<span class="kw">auto</span> v:Next)
+            <span class="kw">if</span>(M.find(v)==M.end())
+            {
+                Q.push(v);
+                M[v]=M[{x,y}]+<span class="num">1</span>;
+                <span class="kw">if</span>(v.first==k or v.second==k) return !printf(<span class="str">"%d"</span>,M[v]); 
+            }
     }
-    <span class="kw">return</span> -<span class="num">1</span>;
+    printf(<span class="str">"khong dong duoc"</span>);
 }</pre>
                 </div>
               </div>
@@ -830,7 +945,7 @@
           <div id="bt-queens" class="section">
             <div class="section-title">Quay lui — Quân hậu (N-Queens)</div>
             <div class="section-sub">
-              Đặt N quân hậu trên bàn cờ N×N sao cho không quân nào ăn quân nào
+              Cho bàn cờ n×n, đặt n quân hậu sao cho không con nào ăn con nào
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'q-idea')">
@@ -846,31 +961,24 @@
             <div id="q-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Ý tưởng:</strong> Đặt lần lượt từng hàng, thử từng cột
-                  trong hàng đó. Nếu ô (row, col) an toàn thì đặt hậu, gọi đệ
-                  quy cho hàng tiếp theo. Nếu không an toàn thì thử cột khác
-                  (quay lui).
+                  <strong>Ý tưởng:</strong> Giả sử mảng <code>x[0]...x[n-1]</code> lưu vị trí cột của các quân hậu trên từng hàng.
                 </p>
                 <ul class="steps">
+                  <li><strong>B1:</strong> Nhập kích thước bàn cờ <code>n</code></li>
+                  <li><strong>B2:</strong> Hàm đệ quy <code>TRY(k)</code> giả sử đang xét đặt hậu ở hàng <code>k</code>:</li>
                   <li>
-                    Hàm <code>isSafe(row, col)</code>: kiểm tra cột, đường chéo
-                    trái, đường chéo phải
+                    <strong>TH1: <code>k = n</code></strong> → Đã đặt đủ n quân hậu, in ra cấu hình <code>x[0]...x[n-1]</code>.
                   </li>
                   <li>
-                    Hàm <code>solve(row)</code>: thử đặt hậu vào từng cột của
-                    hàng row
-                  </li>
-                  <li>Nếu row = N → tìm được 1 lời giải, in ra</li>
-                  <li>
-                    Ngược lại: thử col từ 0 đến N-1, nếu safe → đặt → gọi
-                    solve(row+1) → bỏ
+                    <strong>TH2: <code>k &lt; n</code></strong> → Duyệt cột <code>t</code> từ <code>0</code> đến <code>n-1</code>:
+                    <ul style="margin-top: 0.4rem">
+                      <li>Kiểm tra an toàn: <code>x[k] ≠ x[i]</code> và <code>|x[k] - x[i]| ≠ |k - i|</code> với mọi <code>i &lt; k</code>.</li>
+                      <li><em>Hoặc dùng Map <code>Cot</code>, <code>Chinh</code>, <code>Phu</code> như trong code C++ để kiểm tra O(1).</em></li>
+                      <li>Nếu an toàn → Gán <code>x[k] = t</code>, đánh dấu đã đặt và đi tiếp <code>TRY(k+1)</code>.</li>
+                      <li>Sau khi đệ quy xong thì bỏ đánh dấu (quay lui).</li>
+                    </ul>
                   </li>
                 </ul>
-                <div class="formula">
-                  <div class="formula-label">Kiểm tra an toàn</div>
-                  Không có 2 hậu cùng cột: col[i] ≠ col[row]<br />Không có 2 hậu
-                  cùng đường chéo: |row-i| ≠ |col[row]-col[i]|
-                </div>
               </div>
             </div>
 
@@ -931,35 +1039,35 @@
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+                  <pre><span class="cm">//Tichpx - tam hau</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> n, col[<span class="num">100</span>];
-
-<span class="kw">bool</span> <span class="fn">isSafe</span>(<span class="kw">int</span> row, <span class="kw">int</span> c) {
-    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; row; i++)
-        <span class="kw">if</span> (col[i] == c || abs(row-i) == abs(col[i]-c))
-            <span class="kw">return false</span>;
-    <span class="kw">return true</span>;
-}
-
-<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> row) {
-    <span class="kw">if</span> (row == n) {
-        <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) cout &lt;&lt; col[i]+<span class="num">1</span> &lt;&lt; <span class="str">" "</span>;
-        cout &lt;&lt; <span class="str">"\n"</span>;
+<span class="kw">int</span> x[<span class="num">1000</span>],n,dem=<span class="num">0</span>;
+map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu;
+<span class="kw">void</span> <span class="fn">TRY</span>(<span class="kw">int</span> k)
+{
+    <span class="kw">if</span>(k==n) 
+    {
+        cout&lt;&lt;<span class="str">"\n"</span>&lt;&lt;++dem&lt;&lt;<span class="str">" "</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) cout&lt;&lt;<span class="str">"("</span>&lt;&lt;i+<span class="num">1</span>&lt;&lt;<span class="str">","</span>&lt;&lt;x[i]+<span class="num">1</span>&lt;&lt;<span class="str">") "</span>;
         <span class="kw">return</span>;
     }
-    <span class="kw">for</span> (<span class="kw">int</span> c = <span class="num">0</span>; c &lt; n; c++) {
-        <span class="kw">if</span> (<span class="fn">isSafe</span>(row, c)) {
-            col[row] = c;
-            <span class="fn">solve</span>(row + <span class="num">1</span>);
+    <span class="kw">for</span>(<span class="kw">int</span> t=<span class="num">0</span>;t&lt;n;t++)
+        <span class="kw">if</span>(Cot[t]==<span class="num">0</span> and Chinh[k-t]==<span class="num">0</span> and Phu[k+t]==<span class="num">0</span>)
+        {
+            Cot[t]=Chinh[k-t]=Phu[k+t]=<span class="num">1</span>;
+            x[k]=t;
+            <span class="fn">TRY</span>(k+<span class="num">1</span>);
+            Cot[t]=Chinh[k-t]=Phu[k+t]=<span class="num">0</span>; <span class="cm">//lui</span>
         }
-    }
 }
-
-<span class="kw">int</span> <span class="fn">main</span>() {
-    cin &gt;&gt; n;
-    <span class="fn">solve</span>(<span class="num">0</span>);
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    cin&gt;&gt;n;
+    <span class="cm">//Chinh[0]=1;</span>
+    <span class="cm">//Phu[n-1]=1;    </span>
+    <span class="fn">TRY</span>(<span class="num">0</span>);    
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
