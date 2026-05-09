@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ôn tập PTTKTT</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="layout">
@@ -233,9 +233,10 @@
 
           <!-- ===== BFS: Paths to 0 ===== -->
           <div id="bfs-paths" class="section">
-            <div class="section-title">BFS/DFS — Mọi con đường về 0</div>
+            <div class="section-title">BFS — Mọi con đường về 0</div>
             <div class="section-sub">
-              Liệt kê tất cả các đường đi từ n về 0, mỗi bước trừ đi 1 hoặc 2
+              Dùng Stack + tập Output: phân tích u = a×b → sinh v = (a−1)×(b+1),
+              tìm tất cả giá trị có thể đến từ n
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'paths-idea')">
@@ -248,69 +249,490 @@
                 Code C++
               </div>
             </div>
+
+            <!-- ===== Ý TƯỞNG ===== -->
             <div id="paths-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Từ n, mỗi bước có thể trừ 1 hoặc 2.
-                  Liệt kê tất cả các dãy số từ n về đến 0.
+                  <strong>Bài toán:</strong> Từ n, dùng phép biến đổi u = a×b →
+                  v = (a−1)×(b+1). Tìm tất cả giá trị có thể sinh ra (kể cả 0).
                 </p>
-                <p><strong>Ý tưởng (DFS/Quay lui):</strong></p>
                 <ul class="steps">
-                  <li>Bắt đầu từ n, lưu vào đường đi path</li>
-                  <li>Thử trừ 1: gọi đệ quy với n-1 (nếu n-1 ≥ 0)</li>
-                  <li>Thử trừ 2: gọi đệ quy với n-2 (nếu n-2 ≥ 0)</li>
-                  <li>Khi đến 0: in ra đường đi, quay lui</li>
+                  <li><strong>B1:</strong> Nhập n</li>
+                  <li>
+                    <strong>B2:</strong> Khai báo Stack <code>S</code> và tập
+                    <code>Output</code>
+                  </li>
+                  <li>
+                    <strong>B3:</strong> Đưa n vào <code>S</code> và
+                    <code>Output</code>
+                  </li>
+                  <li>
+                    <strong>B4:</strong> Lấy u = <code>S.top()</code> ra khỏi
+                    stack — duyệt mọi cách phân tích u = a×b (a ≤ √u):
+                    <ul style="margin-top: 0.4rem">
+                      <li>Sinh v = (a−1)×(b+1)</li>
+                      <li>
+                        Nếu v <strong>chưa có</strong> trong Output → đưa v vào
+                        <code>S</code> và <code>Output</code>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>B5:</strong> Lặp lại B4 cho đến khi Stack rỗng
+                  </li>
+                  <li>
+                    <strong>B6:</strong> Duyệt xuất tất cả phần tử trong Output
+                  </li>
                 </ul>
                 <div class="formula">
-                  <div class="formula-label">Số đường đi</div>
-                  f(n) = f(n-1) + f(n-2) — giống dãy Fibonacci
+                  <div class="formula-label">Tại sao a ≤ √u?</div>
+                  Mỗi cặp (a, b) với a×b = u và a ≤ b chỉ cần xét một lần — cặp
+                  (b, a) cho kết quả đối xứng đã được bao gồm
                 </div>
-              </div>
-            </div>
-            <div id="paths-ex" class="tab-content">
-              <div class="card">
-                <div class="example-box">
-                  <div class="example-title">Ví dụ với n = 3</div>
-                  <p>Từ 3 về 0:</p>
-                  <p>3 → 2 → 1 → 0 (trừ 1, trừ 1, trừ 1)</p>
-                  <p>3 → 2 → 0 (trừ 1, trừ 2)</p>
-                  <p>3 → 1 → 0 (trừ 2, trừ 1)</p>
+                <div class="note-box" style="margin-top: 0.8rem">
+                  <div class="note-title">⚠ Ví dụ phân tích</div>
                   <p>
-                    → <strong>3 đường đi</strong> = f(3) = f(2)+f(1) = 2+1 = 3 ✓
+                    u = 30 = 1×30 → v = 0×31 = <strong>0</strong> &nbsp;|&nbsp;
+                    2×15 → 1×16 = <strong>16</strong> &nbsp;|&nbsp; 3×10 → 2×11
+                    = <strong>22</strong> &nbsp;|&nbsp; 5×6 → 4×7 =
+                    <strong>28</strong>
                   </p>
                 </div>
               </div>
             </div>
+
+            <!-- ===== MINH HỌA BẢNG ===== -->
+            <div id="paths-ex" class="tab-content">
+              <div class="card">
+                <div class="example-box">
+                  <div class="example-title">
+                    Ví dụ n = 30 — theo dõi Stack và Output từng bước
+                  </div>
+                  <div style="overflow-x: auto; margin-top: 0.6rem">
+                    <table
+                      class="dp-table"
+                      style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 0.82rem;
+                      "
+                    >
+                      <thead>
+                        <tr>
+                          <th
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              background: #131929;
+                            "
+                          >
+                            Bước
+                          </th>
+                          <th
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              background: #131929;
+                            "
+                          >
+                            Xét (u)
+                          </th>
+                          <th
+                            style="
+                              padding: 6px 10px;
+                              text-align: left;
+                              border: 1px solid #2a3555;
+                              background: #131929;
+                            "
+                          >
+                            Next (v sinh ra)
+                          </th>
+                          <th
+                            style="
+                              padding: 6px 10px;
+                              text-align: left;
+                              border: 1px solid #2a3555;
+                              background: #131929;
+                            "
+                          >
+                            Stack S
+                          </th>
+                          <th
+                            style="
+                              padding: 6px 10px;
+                              text-align: left;
+                              border: 1px solid #2a3555;
+                              background: #131929;
+                            "
+                          >
+                            Output
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            0
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            —
+                          </td>
+                          <td
+                            style="padding: 6px 10px; border: 1px solid #2a3555"
+                          >
+                            —
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            [30]
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            {30}
+                          </td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            1
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #60a5fa;
+                              font-weight: 700;
+                            "
+                          >
+                            30
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            0&nbsp; 16&nbsp; 22&nbsp; 28
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            [0, 16, 22, <span style="color: #facc15">28</span>]
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            {30, 0, 16, 22, 28}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            2
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #60a5fa;
+                              font-weight: 700;
+                            "
+                          >
+                            28
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            <span style="color: #6b7280">0*</span>&nbsp;
+                            15&nbsp; 24
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            [0, 16, 22, 15,
+                            <span style="color: #facc15">24</span>]
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            {30, 0, 16, 22, 28, 15, 24}
+                          </td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            3
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #60a5fa;
+                              font-weight: 700;
+                            "
+                          >
+                            24
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            <span style="color: #6b7280">0*</span>&nbsp;
+                            13&nbsp; 18&nbsp; 21
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            [0, 16, 22, 15, 13, 18,
+                            <span style="color: #facc15">21</span>]
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            {…, 13, 18, 21}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                            "
+                          >
+                            4
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #60a5fa;
+                              font-weight: 700;
+                            "
+                          >
+                            21
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            <span style="color: #6b7280">0*</span>&nbsp;
+                            12&nbsp; 20
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            [0, 16, 22, 15, 13, 18, 12,
+                            <span style="color: #facc15">20</span>]
+                          </td>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                            "
+                          >
+                            {…, 12, 20}
+                          </td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td
+                            colspan="5"
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #9ca3af;
+                              font-style: italic;
+                            "
+                          >
+                            … tiếp tục cho đến khi Stack rỗng …
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 10px;
+                              text-align: center;
+                              border: 1px solid #2a3555;
+                              color: #22c55e;
+                              font-weight: 700;
+                            "
+                            colspan="2"
+                          >
+                            Kết quả
+                          </td>
+                          <td
+                            colspan="3"
+                            style="
+                              padding: 6px 10px;
+                              border: 1px solid #2a3555;
+                              font-family: monospace;
+                              color: #4ade80;
+                            "
+                          >
+                            Output (sắp xếp): {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                            …, 30}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p
+                    style="
+                      margin-top: 0.6rem;
+                      font-size: 0.83rem;
+                      color: #9ca3af;
+                    "
+                  >
+                    * Giá trị màu xám = đã có trong Output, bỏ qua không đưa vào
+                    Stack.<br />
+                    Giá trị <span style="color: #facc15">vàng</span> = phần tử
+                    trên cùng Stack (sẽ được xét tiếp theo).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== CODE C++ ===== -->
             <div id="paths-code" class="tab-content">
               <div class="card">
                 <div class="code-block">
-                  <div class="code-header">C++</div>
+                  <div class="code-header">C++ — Ví dụ n = 6</div>
                   <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stack&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;set&gt;</span>
 <span class="kw">using namespace</span> std;
 
-vector&lt;<span class="kw">int</span>&gt; path;
-
-<span class="kw">void</span> <span class="fn">findPaths</span>(<span class="kw">int</span> n) {
-    path.push_back(n);
-    <span class="kw">if</span> (n == <span class="num">0</span>) {
-        <span class="kw">for</span> (<span class="kw">int</span> x : path) cout &lt;&lt; x &lt;&lt; <span class="str">" "</span>;
-        cout &lt;&lt; <span class="str">"\n"</span>;
-    } <span class="kw">else</span> {
-        <span class="kw">if</span> (n - <span class="num">1</span> >= <span class="num">0</span>) <span class="fn">findPaths</span>(n - <span class="num">1</span>);
-        <span class="kw">if</span> (n - <span class="num">2</span> >= <span class="num">0</span>) <span class="fn">findPaths</span>(n - <span class="num">2</span>);
-    }
-    path.pop_back(); <span class="cm">// quay lui</span>
-}
-
 <span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> n; cin &gt;&gt; n;
-    <span class="fn">findPaths</span>(n);
+    <span class="kw">int</span> n = <span class="num">6</span>; <span class="cm">// B1: n = 6</span>
+
+    stack&lt;<span class="kw">int</span>&gt; S;   <span class="cm">// B2: khai báo Stack</span>
+    set&lt;<span class="kw">int</span>&gt; output; <span class="cm">// B2: khai báo tập Output</span>
+
+    <span class="cm">// B3: đưa n vào S và output</span>
+    S.push(n);
+    output.insert(n);
+
+    <span class="cm">// B4 + B5: lặp cho đến khi stack rỗng</span>
+    <span class="kw">while</span> (!S.empty()) {
+        <span class="kw">int</span> u = S.top(); S.pop(); <span class="cm">// lấy u khỏi stack</span>
+
+        <span class="cm">// duyệt phân tích u = a*b, a &lt;= sqrt(u)</span>
+        <span class="kw">for</span> (<span class="kw">int</span> a = <span class="num">1</span>; a * a &lt;= u; a++) {
+            <span class="kw">if</span> (u % a == <span class="num">0</span>) {
+                <span class="kw">int</span> b = u / a;
+                <span class="kw">int</span> v = (a - <span class="num">1</span>) * (b + <span class="num">1</span>); <span class="cm">// sinh v = (a-1)*(b+1)</span>
+                <span class="kw">if</span> (!output.count(v)) {   <span class="cm">// v chưa có trong output</span>
+                    S.push(v);
+                    output.insert(v);
+                }
+            }
+        }
+    }
+
+    <span class="cm">// B6: xuất tất cả phần tử output</span>
+    <span class="kw">for</span> (<span class="kw">int</span> x : output)
+        cout &lt;&lt; x &lt;&lt; <span class="str">" "</span>;
+    cout &lt;&lt; <span class="str">"\n"</span>;
+    <span class="cm">// Kết quả in ra: 0 3 4 6</span>
 }</pre>
                 </div>
+                <div class="example-box" style="margin-top: 0.8rem">
+                  <div class="example-title">Trace n = 6</div>
+                  <p>Push 6 → Output={6}, Stack=[6]</p>
+                  <p>Pop 6: a=1→v=0 (push), a=2→v=4 (push) → Stack=[0,4]</p>
+                  <p>Pop 4: a=1→v=0 (bỏ*), a=2→v=3 (push) → Stack=[0,3]</p>
+                  <p>Pop 3: a=1→v=0 (bỏ*) → Stack=[0]</p>
+                  <p>Pop 0: a×a≤0 → không có v → Stack=[]</p>
+                  <p>→ <strong>Output in ra: 0 3 4 6</strong></p>
+                </div>
                 <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(2^n)</span> — mỗi
-                  bước có 2 lựa chọn
+                  Độ phức tạp: <span class="complexity-tag">O(n × √n)</span> —
+                  mỗi giá trị duyệt ≤ √n ước số
                 </p>
               </div>
             </div>
@@ -403,6 +825,7 @@ Khoảng cách BFS từ S:
                 <div class="code-block">
                   <div class="code-header">C++</div>
                   <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
 <span class="kw">using namespace</span> std;
 
@@ -413,16 +836,16 @@ Khoảng cách BFS từ S:
     <span class="kw">int</span> m = grid.size(), n = grid[<span class="num">0</span>].size();
     vector&lt;vector&lt;<span class="kw">int</span>&gt;&gt; dist(m, vector&lt;<span class="kw">int</span>&gt;(n, -<span class="num">1</span>));
     queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; q;
-    q.push({sx, sy}); dist[sx][sy] = <span class="num">0</span>;
+    q.push(make_pair(sx, sy)); dist[sx][sy] = <span class="num">0</span>;
     <span class="kw">while</span> (!q.empty()) {
-        <span class="kw">auto</span> [x, y] = q.front(); q.pop();
+        <span class="kw">int</span> x = q.front().first, y = q.front().second; q.pop();
         <span class="kw">if</span> (x==ex && y==ey) <span class="kw">return</span> dist[x][y];
         <span class="kw">for</span> (<span class="kw">int</span> d=<span class="num">0</span>; d&lt;<span class="num">4</span>; d++) {
             <span class="kw">int</span> nx=x+dx[d], ny=y+dy[d];
             <span class="kw">if</span> (nx>=<span class="num">0</span> && nx&lt;m && ny>=<span class="num">0</span> && ny&lt;n
                 && grid[nx][ny] != <span class="str">'#'</span> && dist[nx][ny]==-<span class="num">1</span>) {
                 dist[nx][ny] = dist[x][y] + <span class="num">1</span>;
-                q.push({nx, ny});
+                q.push(make_pair(nx, ny));
             }
         }
     }
@@ -505,24 +928,27 @@ Khoảng cách BFS từ S:
                 <div class="code-block">
                   <div class="code-header">C++</div>
                   <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;map&gt;</span>
 <span class="kw">using namespace</span> std;
+<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
 
 <span class="kw">int</span> <span class="fn">bfsWater</span>(<span class="kw">int</span> A, <span class="kw">int</span> B, <span class="kw">int</span> c) {
-    map&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;, <span class="kw">int</span>&gt; dist;
-    queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; q;
-    q.push({<span class="num">0</span>,<span class="num">0</span>}); dist[{<span class="num">0</span>,<span class="num">0</span>}] = <span class="num">0</span>;
+    map&lt;pii, <span class="kw">int</span>&gt; dist;
+    queue&lt;pii&gt; q;
+    q.push(make_pair(<span class="num">0</span>,<span class="num">0</span>)); dist[make_pair(<span class="num">0</span>,<span class="num">0</span>)] = <span class="num">0</span>;
     <span class="kw">while</span> (!q.empty()) {
-        <span class="kw">auto</span> [x, y] = q.front(); q.pop();
-        <span class="kw">int</span> d = dist[{x,y}];
+        <span class="kw">int</span> x = q.front().first, y = q.front().second; q.pop();
+        <span class="kw">int</span> d = dist[make_pair(x,y)];
         <span class="kw">if</span> (x==c || y==c) <span class="kw">return</span> d;
-        vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; next = {
-            {A, y}, {x, B}, {<span class="num">0</span>, y}, {x, <span class="num">0</span>},
-            {x-min(x,B-y), y+min(x,B-y)},
-            {x+min(y,A-x), y-min(y,A-x)}
+        vector&lt;pii&gt; nexts = {
+            make_pair(A, y), make_pair(x, B),
+            make_pair(<span class="num">0</span>, y), make_pair(x, <span class="num">0</span>),
+            make_pair(x-min(x,B-y), y+min(x,B-y)),
+            make_pair(x+min(y,A-x), y-min(y,A-x))
         };
-        <span class="kw">for</span> (<span class="kw">auto</span> s : next)
+        <span class="kw">for</span> (<span class="kw">auto</span> s : nexts)
             <span class="kw">if</span> (!dist.count(s)) { dist[s] = d+<span class="num">1</span>; q.push(s); }
     }
     <span class="kw">return</span> -<span class="num">1</span>;
@@ -1283,14 +1709,16 @@ Khoảng cách BFS từ S:
 vector&lt;<span class="kw">int</span>&gt; <span class="fn">dijkstra</span>(<span class="kw">int</span> n, vector&lt;vector&lt;pii&gt;&gt;&amp; adj, <span class="kw">int</span> s) {
     vector&lt;<span class="kw">int</span>&gt; dist(n+<span class="num">1</span>, INF);
     priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq;
-    dist[s] = <span class="num">0</span>; pq.push({<span class="num">0</span>, s});
+    dist[s] = <span class="num">0</span>; pq.push(make_pair(<span class="num">0</span>, s));
     <span class="kw">while</span>(!pq.empty()) {
-        <span class="kw">auto</span> [d, u] = pq.top(); pq.pop();
+        <span class="kw">int</span> d = pq.top().first, u = pq.top().second; pq.pop();
         <span class="kw">if</span>(d &gt; dist[u]) <span class="kw">continue</span>;
-        <span class="kw">for</span>(<span class="kw">auto</span> [v, w] : adj[u])
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;(<span class="kw">int</span>)adj[u].size(); i++) {
+            <span class="kw">int</span> v=adj[u][i].first, w=adj[u][i].second;
             <span class="kw">if</span>(dist[u]+w &lt; dist[v]) {
-                dist[v] = dist[u]+w; pq.push({dist[v], v});
+                dist[v] = dist[u]+w; pq.push(make_pair(dist[v], v));
             }
+        }
     }
     <span class="kw">return</span> dist;
 }</pre>
@@ -1473,21 +1901,24 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
                 <div class="code-block">
                   <div class="code-header">C++</div>
                   <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
 <span class="kw">using namespace</span> std;
+<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
 
 <span class="kw">int</span> <span class="fn">main</span>() {
     <span class="kw">int</span> n; cin &gt;&gt; n;
-    vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; orders(n);
+    vector&lt;pii&gt; orders(n);
     <span class="kw">for</span>(<span class="kw">auto</span>&amp; o:orders) cin&gt;&gt;o.first&gt;&gt;o.second;
     sort(orders.begin(),orders.end());
-    priority_queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;,vector&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt;,greater&lt;&gt;&gt; pq;
+    priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq;
     <span class="kw">long long</span> t=<span class="num">0</span>, total=<span class="num">0</span>; <span class="kw">int</span> idx=<span class="num">0</span>;
     <span class="kw">while</span>(idx&lt;n || !pq.empty()) {
         <span class="kw">while</span>(idx&lt;n && orders[idx].first&lt;=t)
-            pq.push({orders[idx].second, orders[idx].first}), idx++;
+            pq.push(make_pair(orders[idx].second, orders[idx].first)), idx++;
         <span class="kw">if</span>(pq.empty()) { t=orders[idx].first; <span class="kw">continue</span>; }
-        <span class="kw">auto</span> [p,a]=pq.top(); pq.pop();
+        <span class="kw">int</span> p=pq.top().first, a=pq.top().second; pq.pop();
         t += p; total += t - a;
     }
     cout &lt;&lt; total &lt;&lt; <span class="str">"\n"</span>;
