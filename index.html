@@ -1082,7 +1082,7 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
           <div id="bt-divide" class="section">
             <div class="section-title">Quay lui — Chia của</div>
             <div class="section-sub">
-              Chia n món đồ thành 2 nhóm có tổng giá trị bằng nhau
+              Chia n món đồ cho 2 người sao cho chênh lệch tổng giá trị là nhỏ nhất
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'div-idea')">
@@ -1098,25 +1098,32 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="div-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Cho n món đồ có giá trị v[1..n].
-                  Chia thành 2 nhóm sao cho tổng 2 nhóm bằng nhau.
+                  <strong>Bài toán:</strong> Cho n món đồ có giá trị a[0...n-1].
+                  Chia thành 2 người sao cho chênh lệch min.
                 </p>
                 <p>
-                  <strong>Điều kiện cần:</strong> Tổng S phải là số chẵn. Bài
-                  toán quy về: tìm tập con có tổng = S/2.
+                  <strong>Ý tưởng:</strong>
                 </p>
                 <ul class="steps">
-                  <li>Tính tổng S, kiểm tra S % 2 == 0, đặt target = S/2</li>
+                  <li><strong>B1:</strong> Nhập n, mảng a[0...n-1]. Khởi tạo <code>res = ∞</code>, <code>T = a[0] + ... + a[n-1]</code></li>
+                  <li><strong>B2:</strong> Hàm đệ quy <code>TRY(k, A, B)</code> giả sử đã chia được k đồ vật (từ a[0]...a[k-1]). Tổng người 1 là <code>A</code>, tổng người 2 là <code>B</code></li>
                   <li>
-                    Hàm solve(i, sum): xét món thứ i với tổng nhóm 1 hiện tại là
-                    sum
+                    <strong>TH1: <code>k = n</code></strong> → Đã chia xong n đồ vật. Cập nhật <code>res = B - A</code>.
                   </li>
                   <li>
-                    Thử <strong>cho vào nhóm 1</strong>: solve(i+1, sum + v[i])
+                    <strong>TH2: <code>k &lt; n</code></strong> → Đang chia đồ vật thứ <code>k</code> (giá trị <code>a[k]</code>):
+                    <ul style="margin-top: 0.4rem">
+                      <li>Nếu <code>A + a[k] &le; T / 2</code> thì đệ quy <code>TRY(k+1, A+a[k], B)</code> (Đưa cho người 1).</li>
+                      <li>Nếu <code>B + a[k] &lt; (T + res) / 2</code> thì đệ quy <code>TRY(k+1, A, B+a[k])</code> (Đưa cho người 2).</li>
+                    </ul>
                   </li>
-                  <li>Thử <strong>cho vào nhóm 2</strong>: solve(i+1, sum)</li>
-                  <li>Khi i = n và sum = target → tìm được cách chia</li>
                 </ul>
+                <div class="note-box" style="margin-top: 0.8rem">
+                  <div class="note-title">⚠ Lưu ý</div>
+                  <p>
+                    Biến <code>res</code> lưu trữ chênh lệch nhỏ nhất tìm được. Các điều kiện <code>A + a[k] &le; T/2</code> và <code>B + a[k] &lt; (T+res)/2</code> dùng để <strong>cắt nhánh</strong> (Pruning), loại bỏ nhanh chóng các trường hợp chắc chắn không cho kết quả tốt hơn.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -1124,7 +1131,7 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="viz-panel">
                   <div class="viz-title">
-                    🌳 Cây quay lui — Chia của: v=[3,1,4], target=4
+                    🌳 Cây quay lui — Chia của: a=[47, 28, 16, 20]
                   </div>
                   <div class="viz-controls">
                     <button class="viz-btn primary" id="div-play">
@@ -1153,8 +1160,7 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
                   <div class="bt-log" id="div-log">
                     Nhấn <strong>Bắt đầu</strong> để xem cây quay lui được xây
                     dựng từng bước.<br /><span style="color: #fcd34d"
-                      >v=[3,1,4], S=8, target=4. Mỗi nút hiện thị (i,
-                      sum).</span
+                      >a=[47, 28, 16, 20], T=111. Nút hiển thị (A, B).</span
                     >
                   </div>
                 </div>
@@ -1163,10 +1169,8 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
                   <p>
                     <span style="color: #4a9eff">■ Xanh dương</span> = đang xét
                     &nbsp;|&nbsp;
-                    <span style="color: #22c55e">■ Xanh lá</span> = tìm được
-                    cách chia &nbsp;|&nbsp;
-                    <span style="color: #ef4444">■ Đỏ</span> = cắt nhánh (sum >
-                    target)
+                    <span style="color: #22c55e">■ Xanh lá</span> = duyệt đến đích (cập nhật res) &nbsp;|&nbsp;
+                    <span style="color: #ef4444">■ Đỏ</span> = bị cắt nhánh (điều kiện sai)
                   </p>
                 </div>
               </div>
@@ -1176,30 +1180,34 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+                  <pre><span class="cm">//Tichpx - chia cua</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> n, v[<span class="num">100</span>], group[<span class="num">100</span>], target;
-<span class="kw">bool</span> found = <span class="kw">false</span>;
+<span class="kw">int</span> n, a[<span class="num">100</span>], T=<span class="num">0</span>, res=<span class="num">1e9</span>;
 
-<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> i, <span class="kw">int</span> sum) {
-    <span class="kw">if</span> (found) <span class="kw">return</span>;
-    <span class="kw">if</span> (i == n) {
-        <span class="kw">if</span> (sum == target) { found = <span class="kw">true</span>; <span class="cm">/* in kết quả */</span> }
-        <span class="kw">return</span>;
+<span class="kw">void</span> <span class="fn">TRY</span>(<span class="kw">int</span> k, <span class="kw">int</span> A, <span class="kw">int</span> B)
+{
+    <span class="kw">if</span>(k == n) { 
+        res = B - A; 
+        <span class="kw">return</span>; 
     }
-    <span class="kw">if</span> (sum &gt; target) <span class="kw">return</span>; <span class="cm">// cắt nhánh</span>
-    group[i] = <span class="num">1</span>; <span class="fn">solve</span>(i+<span class="num">1</span>, sum + v[i]);
-    group[i] = <span class="num">2</span>; <span class="fn">solve</span>(i+<span class="num">1</span>, sum);
+    <span class="kw">if</span>(A + a[k] &lt;= T / <span class="num">2</span>) 
+        <span class="fn">TRY</span>(k + <span class="num">1</span>, A + a[k], B);
+        
+    <span class="kw">if</span>(B + a[k] &lt; (T + res) / <span class="num">2</span>) 
+        <span class="fn">TRY</span>(k + <span class="num">1</span>, A, B + a[k]);
 }
 
-<span class="kw">int</span> <span class="fn">main</span>() {
+<span class="kw">int</span> <span class="fn">main</span>()
+{
     cin &gt;&gt; n;
-    <span class="kw">int</span> S = <span class="num">0</span>;
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) { cin&gt;&gt;v[i]; S+=v[i]; }
-    <span class="kw">if</span> (S % <span class="num">2</span> != <span class="num">0</span>) { cout &lt;&lt; <span class="str">"Khong the chia!\n"</span>; <span class="kw">return</span> <span class="num">0</span>; }
-    target = S / <span class="num">2</span>;
-    <span class="fn">solve</span>(<span class="num">0</span>, <span class="num">0</span>);
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n; i++) {
+        cin &gt;&gt; a[i]; 
+        T += a[i];
+    }
+    <span class="fn">TRY</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">0</span>);
+    cout &lt;&lt; res;
 }</pre>
                 </div>
               </div>
@@ -1210,14 +1218,14 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
           <div id="bt-coins" class="section">
             <div class="section-title">Quay lui — Đổi tiền</div>
             <div class="section-sub">
-              Liệt kê tất cả các cách đổi tiền dùng quay lui
+              Tìm số tờ tiền ít nhất để đổi số tiền M
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'btc-idea')">
                 Ý tưởng
               </div>
-              <div class="tab" onclick="switchTab(this, 'btc-ex')">
-                Minh họa
+              <div class="tab" onclick="switchTab(this, 'btc-viz')">
+                🌳 Cây quay lui
               </div>
               <div class="tab" onclick="switchTab(this, 'btc-code')">
                 Code C++
@@ -1226,39 +1234,101 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="btc-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có các mệnh giá d[1..k] (vô hạn mỗi
-                  loại). Liệt kê TẤT CẢ các cách đổi số tiền n.
+                  <strong>Bài toán:</strong> Cho n mệnh giá tiền a[1]...a[n] và số tiền M. Hãy tìm số tờ tiền ít nhất để đổi được M.
                 </p>
+                
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng chính</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li>Sử dụng thuật toán Quay lui (Backtracking) để duyệt qua các số lượng tờ có thể dùng cho mỗi mệnh giá.</li>
+                    <li>
+                      <strong>Trạng thái:</strong> <code>TRY(k, t, T)</code>
+                      <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                        <li><code>k</code>: Đang xét mệnh giá a[k]</li>
+                        <li><code>t</code>: Tổng số tờ đã dùng trước đó</li>
+                        <li><code>T</code>: Tổng số tiền đã đổi được trước đó</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                
+                <p style="margin-top: 1.2rem; font-weight: 600;">Luồng chạy thuật toán:</p>
                 <ul class="steps">
+                  <li><strong>B1:</strong> Khởi tạo kỉ lục <code>res = ∞</code></li>
                   <li>
-                    Hàm solve(idx, remain, path): đang xét mệnh giá thứ idx, còn
-                    lại remain, đường đi path
+                    <strong>B2 (Trường hợp dừng): <code>k = n</code></strong> (Đã đến mệnh giá cuối cùng)
+                    <ul style="margin-top: 0.4rem">
+                      <li>Nếu phần tiền còn lại <code>(M - T)</code> chia hết cho mệnh giá <code>a[n]</code> thì ta dùng thêm <code>(M - T) / a[n]</code> tờ.</li>
+                      <li>Cập nhật kỉ lục: <code>res = min(res, t + (M - T) / a[n])</code></li>
+                    </ul>
                   </li>
                   <li>
-                    Để tránh trùng: mỗi bước chỉ dùng mệnh giá từ idx trở đi
-                    (dùng ≥ idx)
+                    <strong>B3 (Đệ quy): <code>k &lt; n</code></strong>
+                    <ul style="margin-top: 0.4rem">
+                      <li>Gọi <code>z</code> là số tờ sẽ dùng cho mệnh giá <code>a[k]</code>.</li>
+                      <li>
+                        <strong>Điều kiện duyệt (Nhánh cận):</strong> Duyệt <code>z</code> từ 0 trở đi với điều kiện:
+                        <div style="margin-top: 0.4rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                          <span style="background: #1e293b; padding: 4px 10px; border-radius: 6px; border: 1px solid #334155; font-size: 0.9em;">
+                            <span style="color: #60a5fa">z + t &lt; res</span> (Tờ ≤ kỉ lục)
+                          </span>
+                          <span style="background: #1e293b; padding: 4px 10px; border-radius: 6px; border: 1px solid #334155; font-size: 0.9em;">
+                            <span style="color: #60a5fa">T + z * a[k] &le; M</span> (Tiền ≤ M)
+                          </span>
+                        </div>
+                      </li>
+                      <li>Gọi đệ quy: <code>TRY(k+1, t+z, T+z*a[k])</code></li>
+                    </ul>
                   </li>
-                  <li>
-                    Thử dùng d[idx] k lần (k = 0,1,2,...) miễn remain - k*d[idx]
-                    ≥ 0
-                  </li>
-                  <li>Gọi đệ quy với idx+1, remain đã giảm</li>
-                  <li>Khi remain = 0 → in đường đi</li>
                 </ul>
               </div>
             </div>
-            <div id="btc-ex" class="tab-content">
+
+            <div id="btc-viz" class="tab-content">
               <div class="card">
-                <div class="example-box">
-                  <div class="example-title">Ví dụ: d = [1, 2, 5], n = 5</div>
-                  <p>Các cách đổi 5:</p>
-                  <p>1+1+1+1+1 = 5</p>
-                  <p>1+1+1+2 = 5</p>
-                  <p>1+2+2 = 5</p>
-                  <p>5 = 5</p>
+                <div class="viz-panel">
+                  <div class="viz-title">
+                    🌳 Cây quay lui — Đổi tiền: M=18, a=[5, 1, 7, 3]
+                  </div>
+                  <div class="viz-controls">
+                    <button class="viz-btn primary" id="btc-play">
+                      ▶ Bắt đầu
+                    </button>
+                    <button class="viz-btn" id="btc-next" disabled>
+                      Bước tiếp →
+                    </button>
+                    <button class="viz-btn" id="btc-reset">↺ Đặt lại</button>
+                    <span class="viz-step-label" id="btc-step-info"
+                      >Nhấn Bắt đầu</span
+                    >
+                  </div>
+                  <div class="bt-tree-wrap">
+                    <svg
+                      id="btc-svg"
+                      class="bt-tree-svg"
+                      width="580"
+                      height="280"
+                      viewBox="0 0 580 280"
+                    >
+                      <g id="btc-edges"></g>
+                      <g id="btc-nodes"></g>
+                    </svg>
+                  </div>
+                  <div class="bt-log" id="btc-log">
+                    Nhấn <strong>Bắt đầu</strong> để xem cây quay lui được xây
+                    dựng từng bước.<br /><span style="color: #fcd34d"
+                      >M=18, a=[5, 1, 7, 3]. Nút hiển thị (t, T).</span
+                    >
+                  </div>
+                </div>
+                <div class="note-box" style="margin-top: 0.5rem">
+                  <div class="note-title">📖 Chú giải màu</div>
                   <p>
-                    → Tổng <strong>4 cách</strong>: {1×5}, {1×3, 2×1}, {1×1,
-                    2×2}, {5×1}
+                    <span style="color: #4a9eff">■ Xanh dương</span> = đang xét
+                    &nbsp;|&nbsp;
+                    <span style="color: #22c55e">■ Xanh lá</span> = đến đích (cập nhật res)
+                    &nbsp;|&nbsp;
+                    <span style="color: #ef4444">■ Đỏ</span> = cắt nhánh (pruning)
                   </p>
                 </div>
               </div>
@@ -1267,28 +1337,38 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+                  <pre><span class="cm">//Tichpx</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> d[] = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">5</span>}, k = <span class="num">3</span>, n;
-<span class="kw">int</span> cnt[<span class="num">10</span>];
+<span class="kw">int</span> a[<span class="num">1000</span>], n, M, res = <span class="num">1e9</span>;
 
-<span class="kw">void</span> <span class="fn">solve</span>(<span class="kw">int</span> idx, <span class="kw">int</span> remain) {
-    <span class="kw">if</span> (remain == <span class="num">0</span>) {
-        <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;k; i++)
-            <span class="kw">if</span> (cnt[i]&gt;<span class="num">0</span>) cout &lt;&lt; d[i] &lt;&lt; <span class="str">"x"</span> &lt;&lt; cnt[i] &lt;&lt; <span class="str">" "</span>;
-        cout &lt;&lt; <span class="str">"\n"</span>; <span class="kw">return</span>;
+<span class="kw">void</span> <span class="fn">TRY</span>(<span class="kw">int</span> k, <span class="kw">int</span> t, <span class="kw">int</span> T) <span class="cm">// t: so to da doi, T: tong tien da doi</span>
+{
+    <span class="kw">if</span>(k == n)
+    {
+        <span class="kw">if</span>((M - T) % a[n] == <span class="num">0</span>) 
+            res = min(res, t + (M - T) / a[n]);
     }
-    <span class="kw">if</span> (idx == k) <span class="kw">return</span>;
-    <span class="kw">for</span> (<span class="kw">int</span> c = remain/d[idx]; c &gt;= <span class="num">0</span>; c--) {
-        cnt[idx] = c;
-        <span class="fn">solve</span>(idx+<span class="num">1</span>, remain - c*d[idx]);
+    <span class="kw">else</span> 
+    {
+        <span class="kw">for</span>(<span class="kw">int</span> z = <span class="num">0</span>; z + t &lt; res and T + z * a[k] &lt;= M; z++) 
+            <span class="fn">TRY</span>(k + <span class="num">1</span>, t + z, T + z * a[k]);
     }
-    cnt[idx] = <span class="num">0</span>;
 }
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    cin &gt;&gt; n; <span class="fn">solve</span>(<span class="num">0</span>, n);
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    cin &gt;&gt; n &gt;&gt; M;
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++) 
+        cin &gt;&gt; a[i];
+        
+    <span class="fn">TRY</span>(<span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>);
+    
+    <span class="kw">if</span>(res == <span class="num">1e9</span>) 
+        cout &lt;&lt; <span class="str">"khong doi duoc"</span>;
+    <span class="kw">else</span> 
+        cout &lt;&lt; res;
 }</pre>
                 </div>
               </div>
@@ -1298,10 +1378,10 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
           <!-- ===== GREEDY: Scheduling ===== -->
           <div id="gr-schedule" class="section">
             <div class="section-title">
-              Tham lam — Lập lịch (Activity Selection)
+              Tham lam — Lập lịch
             </div>
             <div class="section-sub">
-              Chọn nhiều công việc nhất trong khoảng thời gian không chồng chéo
+              Chọn nhiều việc nhất mà không chồng chéo kể cả mút
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'sch-idea')">
@@ -1317,30 +1397,24 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="sch-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có n công việc, công việc i có thời
-                  gian bắt đầu s[i] và kết thúc f[i]. Chọn nhiều công việc nhất
-                  sao cho không có 2 công việc nào chồng thời gian.
+                  <strong>Bài toán:</strong> Cho n việc, mỗi việc có thời điểm bắt đầu <code>a_i</code> và kết thúc <code>b_i</code>. Chọn nhiều việc nhất sao cho không có 2 việc nào chồng chéo (kể cả thời điểm chạm mút chung).
                 </p>
-                <p>
-                  <strong>Chiến lược tham lam:</strong> Luôn chọn công việc kết
-                  thúc sớm nhất chưa chồng với công việc đã chọn.
-                </p>
-                <ul class="steps">
-                  <li>
-                    Sắp xếp các công việc theo thời gian
-                    <strong>kết thúc</strong> tăng dần
-                  </li>
-                  <li>Chọn công việc đầu tiên (kết thúc sớm nhất)</li>
-                  <li>
-                    Duyệt qua các công việc còn lại: nếu s[i] ≥ thời điểm kết
-                    thúc của công việc cuối đã chọn → chọn
-                  </li>
-                  <li>Cập nhật thời điểm kết thúc cuối</li>
-                </ul>
-                <div class="formula">
-                  <div class="formula-label">Điều kiện chọn</div>
-                  s[i] ≥ lastFinish → chọn công việc i, cập nhật lastFinish =
-                  f[i]
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng thuật toán</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li><strong>B1:</strong> Nhập vào danh sách các việc gồm <code>&lt;a1, b1&gt;...&lt;an, bn&gt;</code>.</li>
+                    <li><strong>B2:</strong> <strong>Sắp xếp tăng dần theo thời điểm kết thúc</strong> (<code>b</code>). Vì ta muốn kết thúc càng sớm càng tốt để nhường thời gian cho việc khác.</li>
+                    <li><strong>B3:</strong> Khởi tạo số lượng việc đã chọn <code>res = 0</code> và thời điểm kết thúc của việc cuối cùng được chọn là <code>t = -∞</code>.</li>
+                    <li>
+                      <strong>B4:</strong> Duyệt <code>i = 0</code> đến <code>n - 1</code>:
+                      <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                        <li>Nếu thời điểm bắt đầu của việc hiện tại <strong>lớn hơn</strong> thời điểm kết thúc <code>t</code> (tức là <code>a_i > t</code>), ta sẽ <strong>chọn việc này</strong>.</li>
+                        <li>Tăng số lượng việc: <code>res++</code>.</li>
+                        <li>Cập nhật thời điểm kết thúc mới: <code>t = b_i</code>.</li>
+                      </ul>
+                    </li>
+                    <li><strong>B5:</strong> Xuất kết quả <code>res</code>.</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -1350,7 +1424,7 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="viz-panel">
                   <div class="viz-title">
-                    ▶ Thuật toán lập lịch tham lam — từng bước
+                    ▶ Lập lịch: a = [4, 2, 4, 3, 16, 13, 10], b = [7, 8, 8, 5, 22, 15, 17]
                   </div>
                   <div class="viz-controls">
                     <button class="viz-btn primary" id="sch-play">
@@ -1375,6 +1449,16 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
                     từng bước.
                   </div>
                 </div>
+                <div class="note-box" style="margin-top: 0.5rem">
+                  <div class="note-title">📖 Chú giải màu</div>
+                  <p>
+                    <span style="color: #4a9eff">■ Xanh dương</span> = đang xét
+                    &nbsp;|&nbsp;
+                    <span style="color: #22c55e">■ Xanh lá</span> = chọn (thoả mãn a > t)
+                    &nbsp;|&nbsp;
+                    <span style="color: #ef4444">■ Đỏ</span> = loại bỏ (chồng chéo a ≤ t)
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -1382,36 +1466,32 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+                  <pre><span class="cm">//Tichpx</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">struct</span> <span class="tp">Job</span> { <span class="kw">int</span> s, f, id; };
+<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt; pii;
+<span class="kw">#define</span> kt first
+<span class="kw">#define</span> bd second
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> n; cin &gt;&gt; n;
-    vector&lt;<span class="tp">Job</span>&gt; jobs(n);
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; j : jobs) cin &gt;&gt; j.s &gt;&gt; j.f;
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) jobs[i].id = i+<span class="num">1</span>;
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    <span class="kw">int</span> n, res = <span class="num">0</span>, t = -INT_MAX;
+    cin &gt;&gt; n;
+    pii A[n];
+    <span class="kw">for</span>(<span class="kw">auto</span> &amp;a : A) cin &gt;&gt; a.bd &gt;&gt; a.kt;
     
-    sort(jobs.begin(), jobs.end(), [](<span class="tp">Job</span> a, <span class="tp">Job</span> b){
-        <span class="kw">return</span> a.f &lt; b.f;
-    });
+    sort(A, A + n);
     
-    <span class="kw">int</span> lastFinish = -<span class="num">1</span>, count = <span class="num">0</span>;
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; j : jobs) {
-        <span class="kw">if</span>(j.s >= lastFinish) {
-            cout &lt;&lt; <span class="str">"Chon job "</span> &lt;&lt; j.id &lt;&lt; <span class="str">"\n"</span>;
-            lastFinish = j.f; count++;
+    <span class="kw">for</span>(<span class="kw">auto</span> a : A) {
+        <span class="kw">if</span>(a.bd &gt; t) {
+            res++; 
+            t = a.kt;
         }
     }
-    cout &lt;&lt; <span class="str">"Tong so: "</span> &lt;&lt; count &lt;&lt; <span class="str">"\n"</span>;
+    cout &lt;&lt; res;
 }</pre>
                 </div>
-                <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span> do
-                  sắp xếp
-                </p>
               </div>
             </div>
           </div>
@@ -1420,7 +1500,7 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
           <div id="gr-dance" class="section">
             <div class="section-title">Tham lam — Khiêu vũ</div>
             <div class="section-sub">
-              Ghép cặp nam-nữ để tổng chênh lệch chiều cao nhỏ nhất
+              Tìm số lượng cặp nhiều nhất sao cho nam cao hơn nữ
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'dance-idea')">
@@ -1436,24 +1516,24 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="dance-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có n nam (chiều cao m[]) và n nữ
-                  (chiều cao f[]). Ghép mỗi nam với một nữ. Tối thiểu hóa tổng
-                  |m[i] - f[σ(i)]|.
+                  <strong>Bài toán:</strong> Cho <code>n</code> nam với chiều cao <code>a[1...n]</code> và <code>m</code> nữ với chiều cao <code>b[1...m]</code>.
+                  Tìm số lượng cặp khiêu vũ nhiều nhất sao cho trong mỗi cặp, nam luôn cao hơn nữ.
                 </p>
-                <p>
-                  <strong>Chiến lược tham lam:</strong> Sắp xếp cả 2 mảng, ghép
-                  người có rank tương đương với nhau.
-                </p>
-                <ul class="steps">
-                  <li>Sắp xếp m[] tăng dần</li>
-                  <li>Sắp xếp f[] tăng dần</li>
-                  <li>Ghép m[i] với f[i] (cùng thứ hạng)</li>
-                  <li>Tổng chênh lệch = Σ|m[i] - f[i]|</li>
-                </ul>
-                <div class="formula">
-                  <div class="formula-label">Chứng minh tham lam tối ưu</div>
-                  Nếu hoán đổi 2 cặp bất kỳ, tổng không giảm (bất đẳng thức tam
-                  giác)
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng thuật toán</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li><strong>B1:</strong> Nhập <code>n</code>, mảng nam <code>a</code> và sắp xếp giảm dần.</li>
+                    <li><strong>B2:</strong> Nhập <code>m</code>, mảng nữ <code>b</code> và sắp xếp giảm dần.</li>
+                    <li><strong>B3:</strong> Khởi tạo số lượng cặp <code>res = 0</code>, con trỏ nữ <code>j = 0</code>.</li>
+                    <li>
+                      <strong>B4:</strong> Duyệt con trỏ nam <code>i</code> từ <code>0</code> đến <code>n - 1</code>:
+                      <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                        <li>Loại các bạn nữ lớn hơn hoặc bằng bạn nam (tăng <code>j</code> khi <code>b[j] >= a[i]</code>).</li>
+                        <li>Nếu tìm được 1 bạn nữ cao nhất mà <code>&lt; a[i]</code> (tức là <code>j &lt; m</code>), ta ghép cặp, tăng <code>res</code> và <code>j</code>.</li>
+                      </ul>
+                    </li>
+                    <li><strong>B5:</strong> Xuất kết quả <code>res</code>.</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -1496,27 +1576,35 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+                  <pre><span class="cm">//Tichpx</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> n; cin &gt;&gt; n;
-    vector&lt;<span class="kw">int</span>&gt; m(n), f(n);
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:m) cin&gt;&gt;x;
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:f) cin&gt;&gt;x;
-    sort(m.begin(), m.end());
-    sort(f.begin(), f.end());
-    <span class="kw">long long</span> total = <span class="num">0</span>;
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) {
-        cout &lt;&lt; m[i] &lt;&lt; <span class="str">" - "</span> &lt;&lt; f[i] &lt;&lt; <span class="str">"\n"</span>;
-        total += abs(m[i] - f[i]);
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    <span class="kw">int</span> n; 
+    cin &gt;&gt; n; 
+    <span class="kw">int</span> a[n]; 
+    <span class="kw">for</span>(<span class="kw">auto</span> &amp;x : a) cin &gt;&gt; x; 
+    sort(a, a + n, greater&lt;<span class="kw">int</span>&gt;());
+    
+    <span class="kw">int</span> m; 
+    cin &gt;&gt; m; 
+    <span class="kw">int</span> b[m]; 
+    <span class="kw">for</span>(<span class="kw">auto</span> &amp;x : b) cin &gt;&gt; x; 
+    sort(b, b + m, greater&lt;<span class="kw">int</span>&gt;());
+    
+    <span class="kw">int</span> res = <span class="num">0</span>, j = <span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n; i++)   <span class="cm">//O(n+m)</span>
+    {
+        <span class="kw">while</span>(j &lt; m &amp;&amp; b[j] &gt;= a[i]) j++;
+        <span class="kw">if</span>(j &lt; m) { res++; j++; }
     }
-    cout &lt;&lt; <span class="str">"Tong chenh lech: "</span> &lt;&lt; total &lt;&lt; <span class="str">"\n"</span>;
+    cout &lt;&lt; res;
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span>
+                  Độ phức tạp: <span class="complexity-tag">O(n log n + m log m)</span>
                 </p>
               </div>
             </div>
@@ -1544,40 +1632,105 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="metal-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có n thanh kim loại độ dài a[1..n].
-                  Mỗi lần nối 2 thanh có chi phí = tổng độ dài 2 thanh đó. Tối
-                  thiểu hóa tổng chi phí nối.
+                  <strong>Bài toán:</strong> Cho <code>n</code> thanh kim loại có độ dài <code>a[1...n]</code>. Chi phí nối 2 thanh kim loại <code>x, y</code> là <code>x + y</code>. 
+                  Tìm chi phí nối nhỏ nhất để nối <code>n</code> thanh thành 1 thanh duy nhất.
                 </p>
-                <p>
-                  <strong>Chiến lược (Tham lam + Min-Heap):</strong> Luôn nối 2
-                  thanh ngắn nhất trước.
-                </p>
-                <ul class="steps">
-                  <li>Đưa tất cả độ dài vào min-heap (hàng đợi ưu tiên min)</li>
-                  <li>Lặp n-1 lần: lấy 2 phần tử nhỏ nhất a và b</li>
-                  <li>Chi phí += a + b</li>
-                  <li>Đưa (a+b) trở lại heap</li>
-                  <li>Khi heap còn 1 phần tử → xong</li>
-                </ul>
-                <div class="formula">
-                  <div class="formula-label">Tại sao luôn nối ngắn nhất?</div>
-                  Thanh nào nối sớm hơn sẽ được cộng nhiều lần hơn → nối ngắn
-                  trước giảm chi phí
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng thuật toán</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li><strong>B1:</strong> Nhập <code>n</code> và các độ dài <code>a[i]</code>.</li>
+                    <li><strong>B2:</strong> Khai báo Hàng đợi ưu tiên bé (Min-Heap) <code>Q</code>.</li>
+                    <li><strong>B3:</strong> Khởi tạo chi phí <code>res = 0</code>.</li>
+                    <li><strong>B4:</strong> Duyệt <code>i = 1 &rarr; n</code>, đưa <code>a[i]</code> vào <code>Q</code>.</li>
+                    <li>
+                      <strong>B5:</strong> Duyệt lặp đến khi <code>Q.size() == 1</code> (hoặc lặp <code>n - 1</code> lần):
+                      <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                        <li>Khử (lấy và xóa) 2 phần tử nhỏ nhất <code>x, y</code> ra khỏi <code>Q</code>.</li>
+                        <li>Cộng dồn chi phí: <code>res += x + y</code>.</li>
+                        <li>Đưa thanh mới tạo <code>x + y</code> trở lại <code>Q</code>.</li>
+                      </ul>
+                    </li>
+                    <li><strong>B6:</strong> Xuất kết quả <code>res</code>.</li>
+                  </ul>
                 </div>
               </div>
             </div>
             <div id="metal-ex" class="tab-content">
               <div class="card">
                 <div class="example-box">
-                  <div class="example-title">Ví dụ: [4, 3, 2, 6]</div>
-                  <p>Heap: {2, 3, 4, 6}</p>
-                  <p>Bước 1: lấy 2+3=5, chi phí=5. Heap: {4, 5, 6}</p>
-                  <p>Bước 2: lấy 4+5=9, chi phí=5+9=14. Heap: {6, 9}</p>
-                  <p>
-                    Bước 3: lấy 6+9=15, chi phí=14+15=<strong>29</strong>. Heap:
-                    {15}
-                  </p>
-                  <p>→ Tổng chi phí tối thiểu = <strong>29</strong></p>
+                  <div class="example-title">Minh họa với mảng: [4, 7, 2, 8, 8, 4, 3, 2]</div>
+                  <div style="overflow-x: auto; margin-top: 0.5rem;">
+                    <table style="width:100%; text-align: left; border-collapse: collapse; font-size: 0.95rem;">
+                      <thead>
+                        <tr style="border-bottom: 2px solid #334155; color: #94a3b8;">
+                          <th style="padding: 8px 4px;">Các bước</th>
+                          <th style="padding: 8px 4px;">Khử Q (x, y)</th>
+                          <th style="padding: 8px 4px;">Đưa vào Q</th>
+                          <th style="padding: 8px 4px;">next[] (Trạng thái Q)</th>
+                          <th style="padding: 8px 4px;">cost (res)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">Khởi tạo</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">-</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">-</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{2, 2, 3, 4, 4, 7, 8, 8}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">0</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">1</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">2, 2</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">4</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{3, 4, 4, 4, 7, 8, 8}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">0 + 4 = 4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">2</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">3, 4</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">7</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4, 4, 7, 7, 8, 8}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4 + 7 = 11</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">3</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">4, 4</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">8</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{7, 7, 8, 8, 8}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">11 + 8 = 19</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">4</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">7, 7</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">14</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{8, 8, 8, 14}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">19 + 14 = 33</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">5</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">8, 8</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">16</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{8, 14, 16}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">33 + 16 = 49</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">6</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">8, 14</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">22</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{16, 22}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">49 + 22 = 71</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">7</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">16, 22</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">38</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{38}</td>
+                          <td style="padding: 8px 4px; color: #facc15;">71 + 38 = 109</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p style="margin-top: 1rem">→ Tổng chi phí tối thiểu = <strong>109</strong></p>
                 </div>
               </div>
             </div>
@@ -1585,21 +1738,25 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+                  <pre><span class="cm">//Tichpx - noi than kim loai</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> n; cin &gt;&gt; n;
-    priority_queue&lt;<span class="kw">long long</span>, vector&lt;<span class="kw">long long</span>&gt;, greater&lt;<span class="kw">long long</span>&gt;&gt; pq;
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) { <span class="kw">long long</span> x; cin&gt;&gt;x; pq.push(x); }
-    <span class="kw">long long</span> cost = <span class="num">0</span>;
-    <span class="kw">while</span>(pq.size() &gt; <span class="num">1</span>) {
-        <span class="kw">long long</span> a = pq.top(); pq.pop();
-        <span class="kw">long long</span> b = pq.top(); pq.pop();
-        cost += a + b; pq.push(a + b);
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    priority_queue&lt;<span class="kw">long</span>, vector&lt;<span class="kw">long</span>&gt;, greater&lt;<span class="kw">long</span>&gt;&gt; Q;  <span class="cm">//utien be</span>
+    <span class="kw">long</span> n, res = <span class="num">0</span>, x;
+    cin &gt;&gt; n;
+    <span class="kw">while</span>(n--) { cin &gt;&gt; x; Q.push(x); }
+    
+    <span class="kw">while</span>(Q.size() &gt; <span class="num">1</span>)
+    {
+        x = Q.top(); Q.pop();
+        x += Q.top(); Q.pop();
+        res += x;
+        Q.push(x);
     }
-    cout &lt;&lt; cost &lt;&lt; <span class="str">"\n"</span>;
+    cout &lt;&lt; res;
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
@@ -1609,13 +1766,12 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             </div>
           </div>
 
-          <!-- ===== PQ: Detective ===== -->
           <div id="pq-detective" class="section">
             <div class="section-title">
-              Hàng đợi ưu tiên — Trinh thám (Dijkstra)
+              Hàng đợi ưu tiên — Trinh thám
             </div>
             <div class="section-sub">
-              Tìm đường đi ngắn nhất trong đồ thị có trọng số
+              Tìm giá trị lớn nhất trong mỗi cửa sổ trượt kích thước k
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'det-idea')">
@@ -1631,43 +1787,104 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
             <div id="det-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Đồ thị có trọng số không âm. Tìm
-                  đường đi ngắn nhất từ nguồn s đến tất cả đỉnh còn lại.
+                  <strong>Bài toán:</strong> Cho <code>n</code> số nguyên <code>a[1...n]</code> và số <code>k</code>. Cứ mỗi <code>k</code> phần tử liên tiếp, hãy tìm phần tử lớn nhất.
                 </p>
-                <p><strong>Thuật toán Dijkstra:</strong></p>
-                <ul class="steps">
-                  <li>Khởi tạo dist[s]=0, dist[v]=∞ với v≠s</li>
-                  <li>Đưa (0, s) vào min-priority queue</li>
-                  <li>Lấy đỉnh u có dist nhỏ nhất ra khỏi queue</li>
-                  <li>
-                    Với mỗi cạnh (u,v,w): nếu dist[u]+w &lt; dist[v] → cập nhật
-                    dist[v], đưa vào queue
-                  </li>
-                  <li>Lặp đến khi queue rỗng</li>
-                </ul>
-                <div class="note-box">
-                  <div class="note-title">⚠ Điều kiện</div>
-                  <p>
-                    Dijkstra chỉ đúng khi trọng số cạnh ≥ 0. Nếu có cạnh âm →
-                    dùng Bellman-Ford.
-                  </p>
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng thuật toán</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li><strong>B1:</strong> Khai báo HĐUT <code>Q</code> (first: giá trị, second: vị trí).</li>
+                    <li><strong>B2:</strong> Nhập <code>n</code> và <code>k</code>.</li>
+                    <li><strong>B3:</strong> Duyệt <code>i = 1 &rarr; n</code>.</li>
+                    <li><strong>B4:</strong> Nhập <code>a[i]</code>, đưa <code>(a[i], i)</code> vào <code>Q</code>.</li>
+                    <li><strong>B5:</strong> Nếu <code>i &ge; k</code>: Lặp xóa phần tử đỉnh nếu <code>i - Q.top().second &ge; k</code>.</li>
+                    <li><strong>B6:</strong> Xuất <code>Q.top().first</code>.</li>
+                  </ul>
                 </div>
               </div>
             </div>
             <div id="det-ex" class="tab-content">
               <div class="card">
                 <div class="example-box">
-                  <div class="example-title">
-                    Ví dụ đồ thị 4 đỉnh, nguồn = 1
+                  <div class="example-title">Minh họa với n=9, k=3, mảng: 7 4 2 8 6 4 3 5 7</div>
+                  <div style="overflow-x: auto; margin-top: 0.5rem;">
+                    <table style="width:100%; text-align: left; border-collapse: collapse; font-size: 0.95rem;">
+                      <thead>
+                        <tr style="border-bottom: 2px solid #334155; color: #94a3b8;">
+                          <th style="padding: 8px 4px;">Bước i</th>
+                          <th style="padding: 8px 4px;">a[i]</th>
+                          <th style="padding: 8px 4px;">Đưa vào Q (giá trị, vị trí)</th>
+                          <th style="padding: 8px 4px;">Đỉnh Q hợp lệ (sau khi loại)</th>
+                          <th style="padding: 8px 4px;">Xuất</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">1</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">7</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(7, 1)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(7, 1)</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">-</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">2</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">4</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(4, 2)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(7, 1)</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">-</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">3</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">2</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(2, 3)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(7, 1)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">7</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">4</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">8</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(8, 4)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(8, 4)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">8</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">5</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">6</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(6, 5)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(8, 4)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">8</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">6</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">4</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(4, 6)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(8, 4)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">8</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">7</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">3</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(3, 7)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(6, 5) <em>(Đã pop (8,4) và (7,1))</em></td>
+                          <td style="padding: 8px 4px; color: #facc15;">6</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">8</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">5</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(5, 8)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(5, 8) <em>(Đã pop (6,5))</em></td>
+                          <td style="padding: 8px 4px; color: #facc15;">5</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">9</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">7</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">(7, 9)</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">(7, 9)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">7</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <p>
-                    Cạnh: 1-2 (w=2), 1-3 (w=6), 2-3 (w=3), 2-4 (w=8), 3-4 (w=1)
-                  </p>
-                  <p>Ban đầu: dist=[0, ∞, ∞, ∞]</p>
-                  <p>Lấy 1 (d=0): dist[2]=2, dist[3]=6</p>
-                  <p>Lấy 2 (d=2): dist[3]=5, dist[4]=10</p>
-                  <p>Lấy 3 (d=5): dist[4]=6</p>
-                  <p>→ dist = [0, 2, 5, <strong>6</strong>]</p>
+                  <p style="margin-top: 1rem">→ Kết quả cuối cùng: <strong>7 8 8 8 6 5 7</strong></p>
                 </div>
               </div>
             </div>
@@ -1675,33 +1892,30 @@ map&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; Cot,Chinh,Phu
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+                  <pre><span class="cm">//Tichpx - trinh tham</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
-<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
-<span class="kw">const int</span> INF = <span class="num">1e9</span>;
 
-vector&lt;<span class="kw">int</span>&gt; <span class="fn">dijkstra</span>(<span class="kw">int</span> n, vector&lt;vector&lt;pii&gt;&gt;&amp; adj, <span class="kw">int</span> s) {
-    vector&lt;<span class="kw">int</span>&gt; dist(n+<span class="num">1</span>, INF);
-    priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq;
-    dist[s] = <span class="num">0</span>; pq.push(make_pair(<span class="num">0</span>, s));
-    <span class="kw">while</span>(!pq.empty()) {
-        <span class="kw">int</span> d = pq.top().first, u = pq.top().second; pq.pop();
-        <span class="kw">if</span>(d &gt; dist[u]) <span class="kw">continue</span>;
-        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;(<span class="kw">int</span>)adj[u].size(); i++) {
-            <span class="kw">int</span> v=adj[u][i].first, w=adj[u][i].second;
-            <span class="kw">if</span>(dist[u]+w &lt; dist[v]) {
-                dist[v] = dist[u]+w; pq.push(make_pair(dist[v], v));
-            }
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    priority_queue&lt;pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;&gt; Q;
+    <span class="kw">int</span> n, k, x;
+    cin &gt;&gt; n &gt;&gt; k;
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++)
+    {
+        cin &gt;&gt; x;
+        Q.push({x, i});
+        <span class="kw">if</span>(i &gt;= k)
+        {
+            <span class="kw">while</span>(i - Q.top().second &gt;= k) Q.pop();
+            cout &lt;&lt; Q.top().first &lt;&lt; <span class="str">" "</span>;
         }
     }
-    <span class="kw">return</span> dist;
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
                   Độ phức tạp:
-                  <span class="complexity-tag">O((V+E) log V)</span>
+                  <span class="complexity-tag">O(n log n)</span>
                 </p>
               </div>
             </div>
@@ -1727,46 +1941,120 @@ vector&lt;<span class="kw">int</span>&gt; <span class="fn">dijkstra</span>(<span
             <div id="med-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Nhận liên tục các số, sau mỗi số in
-                  ra trung vị của tất cả số đã nhận.
+                  <strong>Bài toán:</strong> Trung vị của dãy <code>a<sub>1</sub>, ..., a<sub>n</sub></code> là phần tử đứng ở vị trí <code>(n+1)/2</code> sau khi sắp xếp tăng dần. Cho dãy <code>a<sub>1</sub>, ..., a<sub>n</sub></code>, hãy tìm lần lượt trung vị của các dãy con <code>{a<sub>1</sub>}, {a<sub>1</sub>, a<sub>2</sub>}, ..., {a<sub>1</sub>, ..., a<sub>n</sub>}</code>.
                 </p>
-                <p><strong>Ý tưởng — 2 Heap:</strong></p>
-                <ul>
-                  <li>
-                    <strong>maxHeap (L)</strong>: chứa nửa nhỏ hơn, đỉnh = max
-                    của nửa nhỏ
-                  </li>
-                  <li>
-                    <strong>minHeap (R)</strong>: chứa nửa lớn hơn, đỉnh = min
-                    của nửa lớn
-                  </li>
-                </ul>
-                <ul class="steps">
-                  <li>Đưa x vào L (maxHeap)</li>
-                  <li>
-                    Nếu L.top() > R.top() → cân bằng: chuyển L.top() sang R
-                  </li>
-                  <li>
-                    Cân bằng kích thước: nếu |L|-|R| > 1 → chuyển L.top() sang
-                    R; hoặc ngược lại
-                  </li>
-                  <li>
-                    Trung vị = L.top() nếu L nhiều hơn, hoặc (L.top()+R.top())/2
-                  </li>
-                </ul>
+                <div class="example-box">
+                  <div class="example-title">Ý tưởng thuật toán (Sử dụng 2 Heap)</div>
+                  <ul class="steps" style="margin-top: 0">
+                    <li><strong>B1:</strong> Khai báo Hàng đợi ưu tiên lớn (Max-Heap) <code>L</code> (chứa nửa bé).</li>
+                    <li><strong>B2:</strong> Khai báo Hàng đợi ưu tiên bé (Min-Heap) <code>R</code> (chứa nửa lớn).</li>
+                    <li><strong>B3:</strong> Nhập số lượng phần tử <code>n</code>.</li>
+                    <li><strong>B4:</strong> Duyệt <code>i = 1 &rarr; n</code>:
+                      <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                        <li>Nhập <code>a[i]</code>.</li>
+                        <li>Nếu <code>i</code> lẻ: <code>L.push(a[i])</code>.</li>
+                        <li>Ngược lại (<code>i</code> chẵn): <code>R.push(a[i])</code>.</li>
+                        <li>Nếu <code>i > 1</code> và <code>L.top() > R.top()</code>: Đảo 2 phần tử đỉnh cho nhau (Lấy <code>top</code> của <code>L</code> đưa vào <code>R</code> và ngược lại).</li>
+                        <li>Xuất <code>L.top()</code> chính là trung vị của dãy hiện tại.</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div id="med-ex" class="tab-content">
               <div class="card">
                 <div class="example-box">
-                  <div class="example-title">
-                    Ví dụ: nhập lần lượt 5, 1, 3, 7, 2
+                  <div class="example-title">Minh họa với mảng: 7 4 2 3 6 1 8 9 5</div>
+                  <div style="overflow-x: auto; margin-top: 0.5rem;">
+                    <table style="width:100%; text-align: left; border-collapse: collapse; font-size: 0.9rem;">
+                      <thead>
+                        <tr style="border-bottom: 2px solid #334155; color: #94a3b8;">
+                          <th style="padding: 8px 4px;">Bước i</th>
+                          <th style="padding: 8px 4px;">a[i]</th>
+                          <th style="padding: 8px 4px;">L (Max-Heap)</th>
+                          <th style="padding: 8px 4px;">R (Min-Heap)</th>
+                          <th style="padding: 8px 4px;">L.top > R.top?</th>
+                          <th style="padding: 8px 4px;">Trung vị</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">1</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">7</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{7}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{}</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">-</td>
+                          <td style="padding: 8px 4px; color: #facc15;">7</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">2</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">4</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7}</td>
+                          <td style="padding: 8px 4px; color: #ef4444;">7 > 4 (Có)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">3</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">2</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4, 2}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7}</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">4 > 7 (Không)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">4</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">3</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{3, 2}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 4}</td>
+                          <td style="padding: 8px 4px; color: #ef4444;">4 > 3 (Có)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">3</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">5</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">6</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4, 3, 2}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 6}</td>
+                          <td style="padding: 8px 4px; color: #ef4444;">6 > 4 (Có)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">6</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">1</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{3, 2, 1}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 6, 4}</td>
+                          <td style="padding: 8px 4px; color: #ef4444;">4 > 1 (Có)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">3</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">7</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">8</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4, 3, 2, 1}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 6, 8}</td>
+                          <td style="padding: 8px 4px; color: #ef4444;">8 > 4 (Có)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                          <td style="padding: 8px 4px; color: #cbd5e1;">8</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">9</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{4, 3, 2, 1}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 6, 8, 9}</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">4 > 6 (Không)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">4</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">9</td>
+                          <td style="padding: 8px 4px; color: #fca5a5;">5</td>
+                          <td style="padding: 8px 4px; color: #4ade80;">{5, 4, 3, 2, 1}</td>
+                          <td style="padding: 8px 4px; color: #60a5fa;">{7, 6, 8, 9}</td>
+                          <td style="padding: 8px 4px; color: #cbd5e1;">5 > 6 (Không)</td>
+                          <td style="padding: 8px 4px; color: #facc15;">5</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <p>x=5: L={5}, R={}. Median=5</p>
-                  <p>x=1: L={1}, R={5}. Median=(1+5)/2=3</p>
-                  <p>x=3: L={3,1}, R={5}. Median=3</p>
-                  <p>x=7: L={3,1}, R={5,7}. Median=(3+5)/2=4</p>
-                  <p>x=2: L={3,2,1}, R={5,7}. Median=3</p>
+                  <p style="margin-top: 1rem">→ Kết quả: <strong>7 4 4 3 4 3 4 4 5</strong></p>
                 </div>
               </div>
             </div>
@@ -1774,28 +2062,33 @@ vector&lt;<span class="kw">int</span>&gt; <span class="fn">dijkstra</span>(<span
               <div class="card">
                 <div class="code-block">
                   <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
+                  <pre><span class="cm">//Tichpx - phan tu trung vi</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-priority_queue&lt;<span class="kw">int</span>&gt; L;
-priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</span>&gt;, greater&lt;<span class="kw">int</span>&gt;&gt; R;
-
-<span class="kw">void</span> <span class="fn">addNum</span>(<span class="kw">int</span> x) {
-    L.push(x);
-    <span class="kw">if</span> (!R.empty() && L.top() > R.top()) { R.push(L.top()); L.pop(); }
-    <span class="kw">if</span> (L.size() > R.size() + <span class="num">1</span>) { R.push(L.top()); L.pop(); }
-    <span class="kw">else if</span> (R.size() > L.size()) { L.push(R.top()); R.pop(); }
-}
-
-<span class="kw">double</span> <span class="fn">getMedian</span>() {
-    <span class="kw">if</span> (L.size() > R.size()) <span class="kw">return</span> L.top();
-    <span class="kw">return</span> (L.top() + R.top()) / <span class="num">2.0</span>;
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    priority_queue&lt;<span class="kw">int</span>&gt; L;   
+    priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</span>&gt;, greater&lt;<span class="kw">int</span>&gt;&gt; R;
+    <span class="kw">int</span> n, x;
+    cin &gt;&gt; n;
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++)
+    {
+        cin &gt;&gt; x;
+        i % <span class="num">2</span> ? L.push(x) : R.push(x);
+        <span class="kw">if</span>(i &gt; <span class="num">1</span> &amp;&amp; L.top() &gt; R.top())
+        {
+            R.push(L.top());
+            L.push(R.top());
+            L.pop();
+            R.pop();
+        }
+        cout &lt;&lt; L.top() &lt;&lt; <span class="str">" "</span>;
+    }
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(log n)</span> mỗi
-                  phần tử
+                  Độ phức tạp: <span class="complexity-tag">O(n log n)</span>
                 </p>
               </div>
             </div>
@@ -1805,7 +2098,7 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
           <div id="pq-delivery" class="section">
             <div class="section-title">Hàng đợi ưu tiên — Giao hàng</div>
             <div class="section-sub">
-              Tối ưu hóa lịch giao hàng sử dụng hàng đợi ưu tiên
+              Bài toán giao hàng có hạn chót (deadline) và tiền thưởng
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'del-idea')">
@@ -1821,83 +2114,122 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
             <div id="del-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có n đơn hàng, đơn i có thời điểm
-                  đến a[i] và thời gian xử lý p[i]. Tối thiểu hóa tổng thời gian
-                  chờ (Shortest Job First).
+                  <strong>Bài toán:</strong> Có n món hàng, mỗi món có hạn chót <code>a<sub>i</sub></code> và tiền thưởng <code>b<sub>i</sub></code>. Mỗi đơn vị thời gian chỉ giao được 1 món. Món hàng i chỉ có thể giao tại thời điểm <code>t &le; a<sub>i</sub></code>. Tìm tổng tiền thưởng lớn nhất.
                 </p>
                 <ul class="steps">
-                  <li>Sắp xếp đơn hàng theo thời điểm đến a[i]</li>
-                  <li>
-                    Dùng min-heap chứa (p[i], a[i]) — ưu tiên đơn hàng xử lý
-                    ngắn
+                  <li><strong>B1:</strong> Khai báo mảng vector <code>A[100005]</code> để nhóm các phần thưởng theo hạn chót.</li>
+                  <li><strong>B2:</strong> Khai báo hàng đợi ưu tiên lớn (Max-Heap) <code>Q</code> để lưu các phần thưởng đang "khả dụng".</li>
+                  <li><strong>B3:</strong> Nhập số lượng món hàng <code>n</code>.</li>
+                  <li><strong>B4:</strong> Duyệt <code>i = 1 &rarr; n</code>: Nhập <code>a<sub>i</sub>, b<sub>i</sub></code> và đưa vào <code>A[a<sub>i</sub>].push_back(b<sub>i</sub>)</code>.</li>
+                  <li><strong>B5:</strong> Khởi tạo <code>res = 0</code>.</li>
+                  <li><strong>B6:</strong> Duyệt ngược thời gian <code>i = 10<sup>5</sup> &rarr; 1</code>:
+                    <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                      <li>Đưa tất cả phần thưởng trong <code>A[i]</code> vào <code>Q</code>.</li>
+                      <li>Nếu <code>Q</code> khác rỗng: <code>res += Q.top(); Q.pop();</code></li>
+                    </ul>
                   </li>
-                  <li>Tại thời điểm t: đưa tất cả đơn đến trước t vào heap</li>
-                  <li>Lấy đơn có p[i] nhỏ nhất ra xử lý, cập nhật t</li>
                 </ul>
                 <div class="formula">
-                  <div class="formula-label">Chiến lược SJF</div>
-                  Trong số các đơn đã đến, xử lý đơn ngắn nhất trước → tối thiểu
-                  tổng thời gian chờ
+                  <div class="formula-label">Chiến lược tham lam</div>
+                  Tại mỗi thời điểm <code>t</code> (xét từ muộn về sớm), ta chọn món có tiền thưởng cao nhất trong số các món có hạn chót <code>&ge; t</code> chưa được giao.
                 </div>
               </div>
             </div>
             <div id="del-ex" class="tab-content">
               <div class="card">
                 <div class="example-box">
-                  <div class="example-title">Ví dụ: 3 đơn hàng</div>
-                  <table class="dp-table" style="margin: 0.5rem 0">
-                    <tr>
-                      <th>Đơn</th>
-                      <th>Đến (a)</th>
-                      <th>Xử lý (p)</th>
-                    </tr>
-                    <tr>
-                      <td>1</td>
-                      <td>0</td>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>1</td>
-                      <td>2</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>2</td>
-                      <td>4</td>
-                    </tr>
-                  </table>
-                  <p>t=0→6 (đơn 1), t=6→8 (đơn 2), t=8→12 (đơn 3)</p>
-                  <p>Tổng chờ: (6-0)+(8-1)+(12-2) = <strong>23</strong></p>
+                  <div class="example-title">Ví dụ minh họa</div>
+                  <p>Cho <code>a = [3, 3, 1, 2, 2, 6]</code> và <code>b = [5, 7, 3, 4, 2, 1]</code></p>
+                  <div style="overflow-x: auto; margin-top: 0.8rem;">
+                    <table class="dp-table" style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr>
+                          <th style="padding: 8px; text-align: center; border: 1px solid #2a3555; background: #131929;">Thời gian i</th>
+                          <th style="padding: 8px; text-align: left; border: 1px solid #2a3555; background: #131929;">Món mới (A[i])</th>
+                          <th style="padding: 8px; text-align: left; border: 1px solid #2a3555; background: #131929;">Q (Max-Heap)</th>
+                          <th style="padding: 8px; text-align: center; border: 1px solid #2a3555; background: #131929;">Chọn</th>
+                          <th style="padding: 8px; text-align: center; border: 1px solid #2a3555; background: #131929;">res</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">6</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">{1}</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{1}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #4ade80;">1</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">1</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">5</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">—</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #94a3b8;">—</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">1</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">4</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">—</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #94a3b8;">—</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">1</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">3</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">{5, 7}</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{7, 5}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #4ade80;">7</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">8</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">2</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">{4, 2}</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{5, 4, 2}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #4ade80;">5</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">13</td>
+                        </tr>
+                        <tr style="background: #0d1526">
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">1</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555;">{3}</td>
+                          <td style="padding: 8px; border: 1px solid #2a3555; font-family: monospace;">{4, 3, 2}</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555; color: #4ade80;">4</td>
+                          <td style="padding: 8px; text-align: center; border: 1px solid #2a3555;">17</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p style="margin-top: 1rem;">&rarr; Tổng tiền thưởng lớn nhất: <strong>17</strong></p>
                 </div>
               </div>
             </div>
             <div id="del-code" class="tab-content">
               <div class="card">
                 <div class="code-block">
-                  <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+                  <div class="code-header">C++ — Tichpx</div>
+                  <pre><span class="cm">//Tichpx - giao hang</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
-<span class="kw">typedef</span> pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pii;
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> n; cin &gt;&gt; n;
-    vector&lt;pii&gt; orders(n);
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; o:orders) cin&gt;&gt;o.first&gt;&gt;o.second;
-    sort(orders.begin(),orders.end());
-    priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq;
-    <span class="kw">long long</span> t=<span class="num">0</span>, total=<span class="num">0</span>; <span class="kw">int</span> idx=<span class="num">0</span>;
-    <span class="kw">while</span>(idx&lt;n || !pq.empty()) {
-        <span class="kw">while</span>(idx&lt;n && orders[idx].first&lt;=t)
-            pq.push(make_pair(orders[idx].second, orders[idx].first)), idx++;
-        <span class="kw">if</span>(pq.empty()) { t=orders[idx].first; <span class="kw">continue</span>; }
-        <span class="kw">int</span> p=pq.top().first, a=pq.top().second; pq.pop();
-        t += p; total += t - a;
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    <span class="kw">long</span> res = <span class="num">0</span>, n, a, b;
+    vector&lt;<span class="kw">int</span>&gt; A[<span class="num">100005</span>];  <span class="cm">// Các vector tạo ra mặc định rỗng</span>
+    priority_queue&lt;<span class="kw">int</span>&gt; Q;
+    cin &gt;&gt; n;
+    <span class="kw">while</span>(n--)
+    {
+        cin &gt;&gt; a &gt;&gt; b;
+        A[a].push_back(b);
     }
-    cout &lt;&lt; total &lt;&lt; <span class="str">"\n"</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">1e5</span>; i &gt; <span class="num">0</span>; i--)
+    {
+        <span class="kw">for</span>(<span class="kw">auto</span> x : A[i]) Q.push(x);
+        <span class="kw">if</span>(Q.size()) 
+        {
+            res += Q.top();
+            Q.pop();
+        }
+    }
+    cout &lt;&lt; res;
 }</pre>
                 </div>
               </div>
@@ -1908,7 +2240,7 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
           <div id="dp-coins" class="section">
             <div class="section-title">Quy hoạch động — Đổi tiền</div>
             <div class="section-sub">
-              Tìm số đồng xu ít nhất để đổi thành n đồng
+              Tìm số đồng xu ít nhất để đổi thành m đồng (Sử dụng bảng 2 chiều)
             </div>
             <div class="tabs">
               <div class="tab active" onclick="switchTab(this, 'dpc-idea')">
@@ -1924,22 +2256,32 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
             <div id="dpc-idea" class="tab-content active">
               <div class="card">
                 <p>
-                  <strong>Bài toán:</strong> Có các mệnh giá d[1..k] (vô hạn mỗi
-                  loại). Tìm số đồng xu ÍT NHẤT để tổng = n.
+                  <strong>Bài toán:</strong> Có n mệnh giá tiền <code>a[1...n]</code>. Tìm số tờ ít nhất để có tổng bằng <code>m</code>.
                 </p>
-                <div class="formula">
-                  dp[i] = min số xu để đổi i đồng<br />dp[0] = 0<br />dp[i] =
-                  min(dp[i - d[j]] + 1) với mọi d[j] ≤ i
-                </div>
+                <ul class="steps">
+                  <li><strong>B1:</strong> Nhập n, m và mảng các mệnh giá <code>a[1...n]</code>.</li>
+                  <li><strong>B2:</strong> Khai báo ma trận <code>C[n+1][m+1]</code>. Trong đó <code>C[i][j]</code> là số tờ ít nhất để đổi được số tiền <code>j</code> dùng các mệnh giá từ <code>a[1...i]</code>.</li>
+                  <li><strong>B3:</strong> Khởi tạo cột đầu tiên: <code>C[i][0] = 0</code> (để đổi 0 đồng cần 0 tờ).</li>
+                  <li><strong>B4:</strong> Khởi tạo hàng đầu tiên: <code>C[0][j] = &infin;</code> (không có mệnh giá nào thì không đổi được tiền > 0).</li>
+                  <li><strong>B5:</strong> Duyệt <code>i = 1 &rarr; n</code> và <code>j = 1 &rarr; m</code>:
+                    <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                      <li>Nếu <code>a[i] > j</code>: <code>C[i][j] = C[i-1][j]</code> (mệnh giá i quá lớn, lấy kết quả của bước trước).</li>
+                      <li>Ngược lại: <code>C[i][j] = min(C[i-1][j], 1 + C[i][j - a[i]])</code> (chọn tối ưu giữa việc không dùng và có dùng mệnh giá i).</li>
+                    </ul>
+                  </li>
+                  <li><strong>B6:</strong> Kết quả là <code>C[n][m]</code>.</li>
+                </ul>
               </div>
             </div>
+
+
 
             <!-- DP TABLE VISUALIZATION -->
             <div id="dpc-viz" class="tab-content">
               <div class="card">
                 <div class="viz-panel">
                   <div class="viz-title">
-                    📊 Điền bảng QHĐ — đổi tiền: d=[1,3,4], n=6
+                    📊 Điền bảng ma trận QHĐ — đổi tiền: a={5,1,7,3}, m=18
                   </div>
                   <div class="viz-controls">
                     <button class="viz-btn primary" id="dpc-play">
@@ -1955,12 +2297,6 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
                   </div>
                   <div class="dp-anim-wrap">
                     <table class="dp-anim-table" id="dpc-table">
-                      <thead>
-                        <tr id="dpc-head"></tr>
-                      </thead>
-                      <tbody>
-                        <tr id="dpc-body"></tr>
-                      </tbody>
                     </table>
                   </div>
                   <div class="dp-log" id="dpc-log">
@@ -1974,28 +2310,37 @@ priority_queue&lt;<span class="kw">int</span>, vector&lt;<span class="kw">int</s
             <div id="dpc-code" class="tab-content">
               <div class="card">
                 <div class="code-block">
-                  <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>
+                  <div class="code-header">C++ — Tichpx</div>
+                  <pre><span class="cm">//Tichpx - Doi tien QHD</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
-<span class="kw">const int</span> INF = <span class="num">1e9</span>;
+
+<span class="kw">int</span> n, m, a[<span class="num">100</span>], C[<span class="num">100</span>][<span class="num">1000</span>] = {};
+
+<span class="kw">void</span> <span class="fn">TRACE</span>(<span class="kw">int</span> n, <span class="kw">int</span> m) {
+    <span class="kw">if</span> (C[n][m] == <span class="num">0</span>) <span class="kw">return</span>;
+    <span class="kw">while</span> (C[n][m] == C[n - <span class="num">1</span>][m]) n--;
+    <span class="fn">TRACE</span>(n, m - a[n]);
+    cout &lt;&lt; a[n] &lt;&lt; <span class="str">" "</span>;
+}
 
 <span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> k, n; cin &gt;&gt; k &gt;&gt; n;
-    vector&lt;<span class="kw">int</span>&gt; d(k);
-    <span class="kw">for</span>(<span class="kw">auto</span>&amp; x:d) cin&gt;&gt;x;
-    vector&lt;<span class="kw">int</span>&gt; dp(n+<span class="num">1</span>, INF);
-    dp[<span class="num">0</span>] = <span class="num">0</span>;
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=n; i++)
-        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">0</span>; j&lt;k; j++)
-            <span class="kw">if</span>(i &gt;= d[j] && dp[i-d[j]] != INF)
-                dp[i] = min(dp[i], dp[i-d[j]] + <span class="num">1</span>);
-    cout &lt;&lt; dp[n] &lt;&lt; <span class="str">"\n"</span>;
+    cin &gt;&gt; n &gt;&gt; m;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++) cin &gt;&gt; a[i];
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">1</span>; j &lt;= m; j++) C[<span class="num">0</span>][j] = <span class="num">1e9</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++)
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">1</span>; j &lt;= m; j++)
+            <span class="kw">if</span> (a[i] &gt; j) C[i][j] = C[i - <span class="num">1</span>][j];
+            <span class="kw">else</span> C[i][j] = min(C[i - <span class="num">1</span>][j], <span class="num">1</span> + C[i][j - a[i]]);
+    
+    <span class="kw">if</span> (C[n][m] == <span class="num">1e9</span>) cout &lt;&lt; <span class="str">"khong doi duoc"</span>;
+    <span class="kw">else</span> {
+        cout &lt;&lt; <span class="str">"\nSo to "</span> &lt;&lt; C[n][m] &lt;&lt; <span class="str">"\n"</span>;
+        <span class="fn">TRACE</span>(n, m);
+    }
+    <span class="kw">return</span> <span class="num">0</span>;
 }</pre>
                 </div>
-                <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(n×k)</span>
-                </p>
               </div>
             </div>
           </div>

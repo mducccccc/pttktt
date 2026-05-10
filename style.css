@@ -846,3 +846,65 @@ strong {
 .dp-log .ok {
   color: #22c55e;
 }
+
+/* Scheduling Styles */
+.sched-arena {
+  position: relative;
+  background: #070b14;
+  border: 1px solid #1e2740;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 0.8rem;
+  min-height: 250px;
+  overflow: hidden;
+}
+.sched-axis {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100%;
+  pointer-events: none;
+}
+.sched-ticks {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100%;
+}
+.sched-tick {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background: #1e2740;
+  color: #64748b;
+  font-size: 10px;
+  padding-left: 4px;
+}
+.sched-job {
+  position: absolute;
+  height: 24px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #e2e8f0;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.sched-job.active {
+  border-color: #4a9eff;
+  background: rgba(74, 158, 255, 0.2);
+  transform: scale(1.02);
+  z-index: 5;
+}
+.sched-job.success {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.2);
+}
+.sched-job.rejected {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  opacity: 0.5;
+}
+.sched-job.inactive {
+  opacity: 0.3;
+}
