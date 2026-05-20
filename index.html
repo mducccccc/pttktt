@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
@@ -1742,11 +1742,27 @@
             </div>
             <div id="lcs-idea" class="tab-content active">
               <div class="card">
-                <div class="formula">
-                  dp[i][j] = độ dài LCS của X[1..i] và Y[1..j]<br /><br />Nếu
-                  X[i] == Y[j]: dp[i][j] = dp[i-1][j-1] + 1<br />Ngược lại:
-                  dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-                </div>
+                <p>
+                  <strong>Bài toán:</strong> Tìm xâu con chung dài nhất của 2 xâu không cần liên tục nhưng đảm bảo biểu thức đúng thứ tự.
+                </p>
+                <ul class="steps">
+                  <li><strong>B1:</strong> Khai báo mảng 2 chiều <code>C[i][j]</code> là độ dài của xâu con chung dài nhất của đoạn <code>x<sub>1</sub>..x<sub>i</sub></code> và <code>y<sub>1</sub>..y<sub>j</sub></code>.</li>
+                  <li><strong>B2:</strong> Khởi tạo bài toán cơ sở (khi một trong hai xâu rỗng, độ dài xâu chung = 0):
+                    <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                      <li><code>C[i][0] = 0</code> (với mọi i)</li>
+                      <li><code>C[0][j] = 0</code> (với mọi j)</li>
+                    </ul>
+                  </li>
+                  <li><strong>B3:</strong> Duyệt lần lượt từng kí tự <code>i = 1 &rarr; n</code> của xâu X và <code>j = 1 &rarr; m</code> của xâu Y:
+                    <ul style="margin-top: 0.4rem; list-style-type: circle; margin-left: 1rem;">
+                      <li>Nếu <code>x<sub>i</sub> == y<sub>j</sub></code> (2 kí tự giống nhau): Kí tự này chắc chắn thuộc xâu con chung, độ dài tăng thêm 1 so với xâu trước đó &rarr; <code>C[i][j] = 1 + C[i-1][j-1]</code></li>
+                      <li>Ngược lại <code>x<sub>i</sub> &ne; y<sub>j</sub></code> (2 kí tự khác nhau): Lấy kết quả tốt nhất giữa việc bỏ đi kí tự hiện tại của X hoặc của Y &rarr; <code>C[i][j] = max(C[i-1][j], C[i][j-1])</code></li>
+                    </ul>
+                  </li>
+                  <li><strong>B4:</strong> Kết quả cuối cùng là <code>C[n][m]</code>. Cần dùng hàm <code>TRACE</code> truy ngược từ <code>C[n][m]</code> về <code>C[0][0]</code> để in ra xâu kết quả.
+                    <br><em style="color:#94a3b8; font-size: 0.9em; margin-top: 0.3rem; display: inline-block;">(Ví dụ truy vết cơ sở: C[1][1] = 0, C[3][2] = 1, C[3][3] = 1)</em>
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -1754,7 +1770,7 @@
               <div class="card">
                 <div class="viz-panel">
                   <div class="viz-title">
-                    📊 Điền bảng LCS — X="ABCB", Y="BDCAB"
+                    📊 Điền bảng LCS (Giống đổi tiền) — X="ATGTXAXG", Y="XGGTAAGT"
                   </div>
                   <div class="viz-controls">
                     <button class="viz-btn primary" id="lcs-play">
@@ -1782,24 +1798,35 @@
             <div id="lcs-code" class="tab-content">
               <div class="card">
                 <div class="code-block">
-                  <div class="code-header">C++</div>
-                  <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+                  <div class="code-header">C++ — Tichpx</div>
+                  <pre><span class="cm">//Tichpx</span>
+<span class="kw">#include</span><span class="str">&lt;bits/stdc++.h&gt;</span>
 <span class="kw">using namespace</span> std;
 
-<span class="kw">int</span> <span class="fn">main</span>() {
-    string X, Y; cin &gt;&gt; X &gt;&gt; Y;
-    <span class="kw">int</span> m=X.size(), n=Y.size();
-    vector&lt;vector&lt;<span class="kw">int</span>&gt;&gt; dp(m+<span class="num">1</span>, vector&lt;<span class="kw">int</span>&gt;(n+<span class="num">1</span>, <span class="num">0</span>));
-    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=m; i++)
-        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">1</span>; j&lt;=n; j++) {
-            <span class="kw">if</span>(X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]) dp[i][j] = dp[i-<span class="num">1</span>][j-<span class="num">1</span>] + <span class="num">1</span>;
-            <span class="kw">else</span> dp[i][j] = max(dp[i-<span class="num">1</span>][j], dp[i][j-<span class="num">1</span>]);
-        }
-    cout &lt;&lt; dp[m][n] &lt;&lt; <span class="str">"\n"</span>;
+<span class="kw">int</span> C[<span class="num">100</span>][<span class="num">100</span>]={},n,m;
+string x,y;
+<span class="kw">void</span> <span class="fn">TRACE</span>(<span class="kw">int</span> n,<span class="kw">int</span> m)
+{
+    <span class="kw">if</span>(C[n][m]==<span class="num">0</span>) <span class="kw">return</span>;
+    <span class="kw">while</span>(C[n][m]==C[n-<span class="num">1</span>][m]) n--;
+    <span class="kw">while</span>(C[n][m]==C[n][m-<span class="num">1</span>]) m--;
+    <span class="fn">TRACE</span>(n-<span class="num">1</span>,m-<span class="num">1</span>);
+    cout&lt;&lt;x[n];
+}
+<span class="kw">int</span> <span class="fn">main</span>()
+{
+    cin&gt;&gt;x; n=x.length(); x=<span class="str">"$"</span>+x;  <span class="cm">//thuat toan phan tich tu x1</span>
+    cin&gt;&gt;y; m=y.length(); y=<span class="str">"$"</span>+y; 
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>;i&lt;=n;i++)
+    <span class="kw">for</span>(<span class="kw">int</span> j=<span class="num">1</span>;j&lt;=m;j++)
+    <span class="kw">if</span>(x[i]==y[j]) C[i][j]=<span class="num">1</span>+C[i-<span class="num">1</span>][j-<span class="num">1</span>];
+    <span class="kw">else</span> C[i][j]=max(C[i-<span class="num">1</span>][j],C[i][j-<span class="num">1</span>]);
+    cout&lt;&lt;<span class="str">"\ndo dai xccdn "</span>&lt;&lt;C[n][m]&lt;&lt;<span class="str">"\n"</span>;
+    <span class="fn">TRACE</span>(n,m);
 }</pre>
                 </div>
                 <p style="margin-top: 0.5rem">
-                  Độ phức tạp: <span class="complexity-tag">O(m×n)</span>
+                  Độ phức tạp: <span class="complexity-tag">O(n×m)</span>
                 </p>
               </div>
             </div>

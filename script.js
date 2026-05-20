@@ -1,4 +1,4 @@
-﻿/* ===================== NAV ===================== */
+/* ===================== NAV ===================== */
 function show(id, el) {
   document
     .querySelectorAll(".section")
@@ -587,8 +587,8 @@ function switchTab(el, contentId) {
 
 /* ===================== DP: LCS TABLE ===================== */
 (function () {
-  const X = "ABCB",
-    Y = "BDCAB";
+  const X = "ATGTXAXG",
+    Y = "XGGTAAGT";
   const m = X.length,
     n = Y.length;
   let dp = [],
@@ -631,7 +631,7 @@ function switchTab(el, contentId) {
       i: -1,
       j: -1,
       done: true,
-      msg: `<span class="ok">✅ LCS dài ${dp[m][n]} — truy vết ngược để tìm "BCB"</span>`,
+      msg: `<span class="ok">✅ LCS dài ${dp[m][n]} — truy vết ngược để tìm "GTAG"</span>`,
       snapshot: dp.map((r) => [...r]),
     });
   }
